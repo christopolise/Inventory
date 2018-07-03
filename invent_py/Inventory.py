@@ -19,7 +19,7 @@ def prereqcheck():
     Checks for and installs prerequisites if necessary
     :return:
     """
-    prerequisites = ['dmidecode', 'util-linux', 'ethtool', 'usbutils', 'gptfdisk', 'bc', 'emacs']
+    prerequisites = ['dmidecode', 'util-linux', 'ethtool', 'usbutils', 'gptfdisk', 'bc']
     for i in range(len(prerequisites)):
         rpm = subprocess.Popen(('rpm', '-qa', '--last'), stdout=subprocess.PIPE)
         try:
@@ -74,7 +74,17 @@ def sdp():
 
 
 def serialnumber():
-    pass
+    """
+    Uses dmidecode to find system serial number
+    :return: System serial number
+    """
+    serial = str(subprocess.check_output(('dmidecode', '-s', 'system-serial-number'))).rstrip()
+
+    if serial is not None:
+        if any(c.isalpha() for c in serial):
+            return serial
+    else:
+        return "---"
 
 
 def makemodel():
@@ -192,3 +202,4 @@ def support():
 sudocheck()
 # prereqcheck()
 hostname()
+print(serialnumber())
