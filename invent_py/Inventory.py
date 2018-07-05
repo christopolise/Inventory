@@ -131,8 +131,28 @@ def vendor():
 
 
 def codename():
-    pass
+    """
+    Determines the product name of the actual motherboard/machine that it is used on
+    :return: Returns the system's codename
+    """
+    sysman = str(subprocess.check_output(('dmidecode', '-s', 'system-manufacturer'))).rstrip() + " "
+    sysprodname = str(subprocess.check_output(('dmidecode', '-s', 'system-product-name'))).rstrip() + " "
+    sysver = str(subprocess.check_output(('dmidecode', '-s', 'system-version'))).rstrip()
 
+    # Checks for incomplete information
+
+    sysinfo = [sysman, sysprodname, sysver]
+
+    for i in range(len(sysinfo)):
+        if not any(c.isalpha for c in sysinfo[i]):
+            sysinfo[i] = ""
+
+    sysname = sysman + sysprodname + sysver
+
+    if sysname is not None:
+        return sysname
+    else:
+        return "---"
 
 def cpuspeed():
     pass
@@ -239,5 +259,7 @@ sudocheck()
 hostname()
 serialnumber()
 makemodel()
-print(vendor())
+vendor()
+codename()
+
 
