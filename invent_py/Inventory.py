@@ -88,6 +88,10 @@ def serialnumber():
 
 
 def makemodel():
+    """
+    Determines the CPU architecture-type
+    :return: Returns the make and model of the CPU
+    """
     compinfo = subprocess.Popen(('cat', '/proc/cpuinfo'), stdout=subprocess.PIPE)
     comparch = subprocess.Popen(('grep', '-m', '1', '-i', 'model name'), stdin=compinfo.stdout, stdout=subprocess.PIPE)
     compinfo.stdout.close()
@@ -102,7 +106,28 @@ def makemodel():
 
 
 def vendor():
-    pass
+    """
+    Determines the brand of CPU used
+    :return: CPU type
+    """
+    vendorlscpu = subprocess.Popen(('lscpu'), stdout=subprocess.PIPE)
+    vendorgrep = subprocess.Popen(('grep', '-i', 'Vendor ID'), stdin=vendorlscpu.stdout, stdout=subprocess.PIPE)
+    vendorlscpu.stdout.close()
+    vendorsed1 = subprocess.Popen(('sed', 's/.*: //'), stdin=vendorgrep.stdout, stdout=subprocess.PIPE)
+    vendorgrep.stdout.close()
+    vendorsed2 = subprocess.check_output(('sed', '-e', 's/[ \t]*//'), stdin=vendorsed1.stdout)
+    vendorsed1.stdout.close()
+
+    vendorname = str(vendorsed2).rstrip()
+
+    if vendorname == "GenuineIntel":
+        return 'Intel'
+    elif vendorname == "AuthenticAMD":
+        return 'AMD'
+    elif vendorname == "":
+        return "---"
+    else:
+        return vendorname
 
 
 def codename():
@@ -213,4 +238,6 @@ sudocheck()
 # prereqcheck()
 hostname()
 serialnumber()
-print(makemodel())
+makemodel()
+print(vendor())
+
