@@ -9,10 +9,3 @@
 │   └── subprocess
 ├── Org_Inventory.sh
 └── README.md
->.
->├── invent_py
->│   ├── Inventory.py
->│   ├── os
->│   └── subprocess
->├── Org_Inventory.sh
->└── README.md 

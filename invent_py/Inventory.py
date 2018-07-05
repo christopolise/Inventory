@@ -88,14 +88,17 @@ def serialnumber():
 
 
 def makemodel():
-    compInfo = subprocess.Popen(('cat', '/proc/cpuinfo'), stdout=subprocess.PIPE)
-    print(compInfo)
-    compArch = subprocess.Popen(('grep', '-m', '1', '-i', "'model-name"), stdin=compInfo.stdout, stdout=subprocess.PIPE)
-    print(str(compArch).rstrip())
-    compModel = subprocess.check_output(('sed', 's/.*: //'), stdin=compArch.stdout)
-    print(str(compModel).rstrip())
+    compinfo = subprocess.Popen(('cat', '/proc/cpuinfo'), stdout=subprocess.PIPE)
+    comparch = subprocess.Popen(('grep', '-m', '1', '-i', 'model name'), stdin=compinfo.stdout, stdout=subprocess.PIPE)
+    compinfo.stdout.close()
+    compmodel = subprocess.check_output(('sed', 's/.*: //'), stdin=comparch.stdout)
+    comparch.stdout.close()
+    make = str(compmodel).rstrip()
 
-# Possible answer found here: https://stackoverflow.com/questions/295459/how-do-i-use-subprocess-popen-to-connect-multiple-processes-by-pipes
+    if make is not None:
+        return make
+    else:
+        return "---"
 
 
 def vendor():
@@ -210,4 +213,4 @@ sudocheck()
 # prereqcheck()
 hostname()
 serialnumber()
-makemodel()
+print(makemodel())
