@@ -1,5 +1,6 @@
 import subprocess
 import os
+import re
 
 
 def sudocheck():
@@ -154,9 +155,65 @@ def codename():
     else:
         return "---"
 
-def cpuspeed():
-    pass
 
+def cpuspeed():
+    """
+    Determines the maximum speed of the processor
+    :return: float that represents cpu speed in GHz
+    """
+    speeds = []
+
+    # Method 1: lscpu
+    lscpulscpu = subprocess.Popen(('lscpu'), stdout=subprocess.PIPE)
+    lscpugrep = subprocess.Popen(('grep', '-i', 'CPU max MHz'), stdin=lscpulscpu.stdout, stdout=subprocess.PIPE)
+    lscpulscpu.stdout.close()
+    lscpuspeed = str(subprocess.check_output(('sed', 's/.*: //'), stdin=lscpugrep.stdout)).rstrip().lstrip()
+    lscpugrep.stdout.close()
+    # print(lscpuspeed)
+    lscpuspeed = 7.0
+    if not lscpuspeed.isdecimal():
+        lscpuspeed = "---"
+    else:
+        lscpuspeed = float(lscpuspeed)/1000
+        lscpuspeed = format(lscpuspeed, '.2f')
+        speed = lscpuspeed
+    print(lscpuspeed)
+
+
+    # Method 2: dmidecode
+    dmidmi = subprocess.Popen(('dmidecode'), stdout=subprocess.PIPE)
+    dmigrep = subprocess.Popen(('grep', '-m', '1', 'Max Speed'), stdin=dmidmi.stdout, stdout=subprocess.PIPE)
+    dmidmi.stdout.close()
+    dmised = str(subprocess.check_output(('sed', 's/.*: //'), stdin=dmigrep.stdout)).rstrip()
+    dmigrep.stdout.close()
+    dmispeed = re.sub("[^0-9]", "", dmised)
+    dmispeed = float(dmispeed)/1000
+    dmispeed = format(dmispeed, '.2f')
+
+    # Method 3.1 cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq:
+    syscat = str(subprocess.check_output(('cat', '/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'))).rstrip()
+    if syscat.isdigit():
+        sysspeed = float(syscat)/1000000
+        sysspeed = format(sysspeed, '.2f')
+    else:
+        sysspeed = "---"
+
+    #Method 3.2 cat/sys/devices/system/cpu/cpu/cpufreq/cpuinfo_max_freq:
+    cpucat = str(subprocess.check_output(('cat', '/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'))).rstrip()
+    if cpucat.isdigit:
+        cpuspeed = float(cpucat) / 1000000
+        cpuspeed = format(cpuspeed, '.2f')
+    else:
+        cpuspeed = "---"
+
+    # Take the highest value out of all possible speeds and return it
+    first = 1.0
+    second = 2.0
+    third = 34.0
+    fourth = "---"
+    testlist = [first, second, third, fourth]
+
+    # print(max(testlist))
 
 def sockets():
     pass
@@ -261,5 +318,4 @@ serialnumber()
 makemodel()
 vendor()
 codename()
-
-
+cpuspeed()
