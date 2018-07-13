@@ -278,7 +278,31 @@ def cpucores():
 
 
 def ram():
-    pass
+    """
+    Determines the amount of RAM in the system (this method is not very accurate)
+    :return: Integer that represents the amount of RAM in the system
+    """
+    catdividend = subprocess.Popen(('cat', '/proc/meminfo'), stdout=subprocess.PIPE)
+    grepdividend = subprocess.Popen(('grep', '-i', 'memtotal'), stdin=catdividend.stdout, stdout=subprocess.PIPE)
+    catdividend.stdout.close()
+    seddividend = subprocess.Popen(('sed', 's/.*: //'), stdin=grepdividend.stdout, stdout=subprocess.PIPE)
+    grepdividend.stdout.close()
+    sed2dividend = str(subprocess.check_output(('sed', 's/[^0-9]*//g'), stdin=seddividend.stdout)).rstrip().lstrip()
+    seddividend.stdout.close()
+    dividend = int(sed2dividend)
+    divisor = 1048576
+    quotient = dividend/divisor
+
+    try:
+        if (quotient % 2) == 1:
+            quotient += 1
+        elif (quotient % 2) == 0:
+            quotient += 2
+        return quotient
+    except TypeError:
+        return '---'
+
+
 
 
 def virttech():
@@ -368,4 +392,5 @@ cpuspeed()
 sockets()
 threads()
 hyperthreading()
-print(cpucores())
+cpucores()
+print(ram())
