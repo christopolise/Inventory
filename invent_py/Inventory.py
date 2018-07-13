@@ -242,7 +242,7 @@ def threads():
     :return: An integer that shows how many cores are on the system
     """
     lscputhread = subprocess.Popen('lscpu', stdout=subprocess.PIPE)
-    grepthread = subprocess.Popen(('grep', '-i', 'cpu(s)'), stdin=lscputhread.stdout, stdout=subprocess.PIPE)
+    grepthread = subprocess.Popen(('grep', '-m', '1', '-i', 'cpu(s)'), stdin=lscputhread.stdout, stdout=subprocess.PIPE)
     lscputhread.stdout.close()
     sedthread = str(subprocess.check_output(('sed', 's/.*: //'), stdin=grepthread.stdout)).rstrip().lstrip()
     grepthread.stdout.close()
@@ -267,7 +267,14 @@ def hyperthreading():
 
 
 def cpucores():
-    pass
+    """
+    Determines the amount of cores / cpu
+    :return: An integer that represents how many threads per core there are
+    """
+    try:
+        return int(threads())/int(sockets())
+    except TypeError:
+        return '---'
 
 
 def ram():
@@ -359,3 +366,6 @@ vendor()
 codename()
 cpuspeed()
 sockets()
+threads()
+hyperthreading()
+print(cpucores())
