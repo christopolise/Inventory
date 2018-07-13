@@ -303,11 +303,21 @@ def ram():
         return '---'
 
 
-
-
 def virttech():
-    pass
+    """
+    Determines if cpu virtualization technology is supported on the System
+    :return: Yes or no
+    """
+    catvirt = subprocess.Popen(('cat', '/proc/cpuinfo'), stdout=subprocess.PIPE)
+    grepvirt = subprocess.Popen(('grep', '-m', '1', 'flags'), stdin=catvirt.stdout, stdout=subprocess.PIPE)
+    catvirt.stdout.close()
+    grep2virt = str(subprocess.check_output(('grep', '-oE', 'vdmx|svdm'), stdin=grepvirt.stdout)).rstrip()
+    grepvirt.stdout.close()
 
+    if grep2virt is not None:
+        print(grep2virt)
+    else:
+        print('Empty')
 
 def vtd():
     return 'VTD'
@@ -393,4 +403,5 @@ sockets()
 threads()
 hyperthreading()
 cpucores()
-print(ram())
+ram()
+print(virttech())
