@@ -1,6 +1,10 @@
+#!/usr/bin/python
+
 import subprocess
 import os
 import re
+
+IS_DIG_DEC = re.compile(r'\d+\.?\d*')  # Is an integer or decimal
 
 
 def sudocheck():
@@ -151,7 +155,7 @@ def codename():
     sysname = sysman + sysprodname + sysver
 
     if sysname is not None:
-        return sysname
+        return str(sysname)
     else:
         return "---"
 
@@ -164,56 +168,56 @@ def cpuspeed():
     speeds = []
 
     # Method 1: lscpu
-    lscpulscpu = subprocess.Popen(('lscpu'), stdout=subprocess.PIPE)
+    lscpulscpu = subprocess.Popen('lscpu', stdout=subprocess.PIPE)
     lscpugrep = subprocess.Popen(('grep', '-i', 'CPU max MHz'), stdin=lscpulscpu.stdout, stdout=subprocess.PIPE)
     lscpulscpu.stdout.close()
     lscpuspeed = str(subprocess.check_output(('sed', 's/.*: //'), stdin=lscpugrep.stdout)).rstrip().lstrip()
     lscpugrep.stdout.close()
-    # print(lscpuspeed)
-    lscpuspeed = 7.0
-    if not lscpuspeed.isdecimal():
-        lscpuspeed = "---"
-    else:
-        lscpuspeed = float(lscpuspeed)/1000
-        lscpuspeed = format(lscpuspeed, '.2f')
-        speed = lscpuspeed
-    print(lscpuspeed)
 
+    if IS_DIG_DEC.match(str(lscpuspeed)):  # Verifies that the input is an integer or float.
+        lscpuspeed = float(lscpuspeed) / 1000
+        lscpuspeed = format(lscpuspeed, '.2f')
+    else:
+        lscpuspeed = "---"
+    speeds.append(lscpuspeed)
 
     # Method 2: dmidecode
-    dmidmi = subprocess.Popen(('dmidecode'), stdout=subprocess.PIPE)
+    dmidmi = subprocess.Popen('dmidecode', stdout=subprocess.PIPE)
     dmigrep = subprocess.Popen(('grep', '-m', '1', 'Max Speed'), stdin=dmidmi.stdout, stdout=subprocess.PIPE)
     dmidmi.stdout.close()
     dmised = str(subprocess.check_output(('sed', 's/.*: //'), stdin=dmigrep.stdout)).rstrip()
     dmigrep.stdout.close()
     dmispeed = re.sub("[^0-9]", "", dmised)
-    dmispeed = float(dmispeed)/1000
+    dmispeed = float(dmispeed) / 1000
     dmispeed = format(dmispeed, '.2f')
+    speeds.append(dmispeed)
 
     # Method 3.1 cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq:
     syscat = str(subprocess.check_output(('cat', '/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'))).rstrip()
-    if syscat.isdigit():
-        sysspeed = float(syscat)/1000000
+    if IS_DIG_DEC.match(str(syscat)):
+        sysspeed = float(syscat) / 1000000
         sysspeed = format(sysspeed, '.2f')
     else:
         sysspeed = "---"
+    speeds.append(sysspeed)
 
-    #Method 3.2 cat/sys/devices/system/cpu/cpu/cpufreq/cpuinfo_max_freq:
+    # Method 3.2 cat/sys/devices/system/cpu/cpu/cpufreq/cpuinfo_max_freq:
     cpucat = str(subprocess.check_output(('cat', '/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'))).rstrip()
-    if cpucat.isdigit:
+    if IS_DIG_DEC.match(str(cpucat)):
         cpuspeed = float(cpucat) / 1000000
         cpuspeed = format(cpuspeed, '.2f')
     else:
         cpuspeed = "---"
+    speeds.append(cpuspeed)
 
     # Take the highest value out of all possible speeds and return it
-    first = 1.0
-    second = 2.0
-    third = 34.0
-    fourth = "---"
-    testlist = [first, second, third, fourth]
+    filterlist = []
+    for i in range(len(speeds)):
+        if IS_DIG_DEC.match(str(speeds[i])):
+            filterlist.append(speeds[i])
 
-    # print(max(testlist))
+    return max(filterlist)
+
 
 def sockets():
     pass
