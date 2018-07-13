@@ -233,7 +233,16 @@ def sockets():
 
 
 def threads():
-    pass
+    lscputhread = subprocess.Popen('lscpu', stdout=subprocess.PIPE)
+    grepthread = subprocess.Popen(('grep', '-i', 'cpu(s)'), stdin=lscputhread.stdout, stdout=subprocess.PIPE)
+    lscputhread.stdout.close()
+    sedthread = str(subprocess.check_output(('sed', 's/.*: //'), stdin=grepthread.stdout)).rstrip().lstrip()
+    grepthread.stdout.close()
+
+    if sedthread is not None:
+        return sedthread
+    else:
+        return "---"
 
 
 def hyperthreading():
