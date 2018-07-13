@@ -220,7 +220,16 @@ def cpuspeed():
 
 
 def sockets():
-    pass
+    lscpusocket = subprocess.Popen('lscpu', stdout=subprocess.PIPE)
+    grepsocket = subprocess.Popen(('grep', '-i', 'socket(s)'), stdin=lscpusocket.stdout, stdout=subprocess.PIPE)
+    lscpusocket.stdout.close()
+    sedsocket = str(subprocess.check_output(('sed', 's/.*: //'), stdin=grepsocket.stdout)).rstrip().lstrip()
+    grepsocket.stdout.close()
+
+    if sedsocket is not None:
+        return sedsocket
+    else:
+        return "---"
 
 
 def threads():
@@ -323,3 +332,4 @@ makemodel()
 vendor()
 codename()
 cpuspeed()
+sockets()
