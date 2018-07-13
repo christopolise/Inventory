@@ -220,6 +220,10 @@ def cpuspeed():
 
 
 def sockets():
+    """
+    Determines how many threads the cpu has
+    :return: An integer that represents the number of physical cpus
+    """
     lscpusocket = subprocess.Popen('lscpu', stdout=subprocess.PIPE)
     grepsocket = subprocess.Popen(('grep', '-i', 'socket(s)'), stdin=lscpusocket.stdout, stdout=subprocess.PIPE)
     lscpusocket.stdout.close()
@@ -233,6 +237,10 @@ def sockets():
 
 
 def threads():
+    """
+    Determines how many threads the cpu has
+    :return: An integer that shows how many cores are on the system
+    """
     lscputhread = subprocess.Popen('lscpu', stdout=subprocess.PIPE)
     grepthread = subprocess.Popen(('grep', '-i', 'cpu(s)'), stdin=lscputhread.stdout, stdout=subprocess.PIPE)
     lscputhread.stdout.close()
@@ -246,7 +254,16 @@ def threads():
 
 
 def hyperthreading():
-    pass
+    """
+    Determines if the computer has more than one cpu
+    :return: Yes or no, and a special null case
+    """
+    if int(threads()) > 1:
+        return 'Y'
+    elif int(threads()) == 1:
+        return 'N'
+    else:
+        return '---'
 
 
 def cpucores():
