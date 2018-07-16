@@ -34,7 +34,6 @@ def prereqcheck():
         rpm.wait()
         if output is None:
             print('Installing dependency: ' + prerequisites[i])
-            # subprocess.run(['zypper', '-n', 'install', prerequisites[i]])
             os.system('zypper -n install ' + prerequisites[i])
         else:
             print('Dependency ' + prerequisites[i] + ' is already satisfied')
@@ -311,13 +310,17 @@ def virttech():
     catvirt = subprocess.Popen(('cat', '/proc/cpuinfo'), stdout=subprocess.PIPE)
     grepvirt = subprocess.Popen(('grep', '-m', '1', 'flags'), stdin=catvirt.stdout, stdout=subprocess.PIPE)
     catvirt.stdout.close()
-    grep2virt = str(subprocess.check_output(('grep', '-oE', 'vdmx|svdm'), stdin=grepvirt.stdout)).rstrip()
-    grepvirt.stdout.close()
+    try:
+        grep2virt = str(subprocess.check_output(('grep', '-oE', 'vmx|svm'), stdin=grepvirt.stdout)).rstrip()
+        grepvirt.stdout.close()
+    except Exception as e:
+        grepvirt.stdout.close()
+        grep2virt = None
 
     if grep2virt is not None:
-        print(grep2virt)
+        return grep2virt
     else:
-        print('Empty')
+        return "---"
 
 def vtd():
     return 'VTD'
