@@ -318,16 +318,33 @@ def virttech():
         grep2virt = None
 
     if grep2virt is not None:
-        return grep2virt
+        return 'Y'
     else:
         return "---"
+
 
 def vtd():
     return 'VTD'
 
 
 def hap():
-    pass
+    """
+    Determines if the processor is capable of hardware assisted paging
+    :return: String that is either 'Y' or 'N'
+    """
+    cathap = subprocess.Popen(('cat', '/proc/cpuinfo'), stdout=subprocess.PIPE)
+    grephap = subprocess.Popen(('grep', '-m', '1', 'flag'), stdin=cathap.stdout, stdout=subprocess.PIPE)
+    cathap.stdout.close()
+    try:
+        grep2hap = subprocess.check_output(('grep', '-o', 'ept'), stdin=grephap.stdout)
+        grephap.stdout.close()
+    except Exception as e:
+        grep2hap = None
+        grephap.stdout.close()
+    if grep2hap is not None:
+        return 'Y'
+    else:
+        return 'N'
 
 
 def sriov():
@@ -407,4 +424,5 @@ threads()
 hyperthreading()
 cpucores()
 ram()
-print(virttech())
+virttech()
+print(hap())
