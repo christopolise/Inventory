@@ -391,7 +391,62 @@ def usb3():
 
 
 def networking():
-    pass
+    lseth = subprocess.Popen(('ls', '/sys/class/net'), stdout=subprocess.PIPE)
+    fortyg = 0
+    teng = 0
+    oneg = 0
+    oneh = 0
+    ethdevices = []
+    try:
+        grepeth = str(subprocess.check_output(('grep', '-E', 'eth|en'), stdin=lseth.stdout)).rstrip()
+        lseth.stdout.close()
+    except Exception as e:
+        grepeth = None
+        lseth.stdout.close()
+    if grepeth is not None:
+        if ("\n" in grepeth):
+            ethdevices = grepeth.splitlines()
+        else:
+            ethdevices.append(grepeth)
+        # print(ethdevices)
+        for i in range(len(ethdevices)):
+
+            ethspeed = subprocess.Popen(('ethtool', str(ethdevices[i])), stdout=subprocess.PIPE)
+            try:
+                grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', '40000base'), stdin=ethspeed.stdout)
+                ethspeed.stdout.close()
+                fortyg += 1
+                print('made 40')
+            except Exception as e:
+                try:
+                    grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', '10000base'), stdin=ethspeed.stdout)
+                    ethspeed.stdout.close()
+                    teng += 1
+                    print('made 10')
+                except Exception as e:
+                    try:
+                        grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', '1000base'),
+                                                            stdin=ethspeed.stdout)
+                        ethspeed.stdout.close()
+                        oneg += 1
+                        print('made 1')
+                    except Exception as e:
+                        try:
+                            grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', '100base'),
+                                                                stdin=ethspeed.stdout)
+                            ethspeed.stdout.close()
+                            oneh += 1
+                            print('made 100')
+                        except Exception as e:
+                            grepspeed = '---'
+                            ethspeed.stdout.close()
+    ethspeeds = []
+    ethspeeds.append(oneh)
+    ethspeeds.append(oneg)
+    ethspeeds.append(teng)
+    ethspeeds.append(fortyg)
+    print(ethspeeds)
+
 
 
 def ssd():
@@ -426,6 +481,22 @@ def support():
     pass
 
 
+def cpufamily():
+    pass
+
+
+def cpumodel():
+    pass
+
+
+def cpustepping():
+    pass
+
+
+def cpumicrocode():
+    pass
+
+
 sudocheck()
 # prereqcheck()
 hostname()
@@ -443,4 +514,5 @@ virttech()
 hap()
 numa()
 efi()
-print(usb3())
+usb3()
+networking()
