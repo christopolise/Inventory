@@ -356,7 +356,17 @@ def numa():
 
 
 def efi():
-    pass
+    lsefi = subprocess.Popen(('ls', '/sys/firmware'), stdout=subprocess.PIPE)
+    try:
+        grepefi = subprocess.check_output(('grep', '-oi', 'efi'), stdin=lsefi.stdout)
+        lsefi.stdout.close()
+    except Exception as e:
+        grepefi = None
+        lsefi.stdout.close()
+    if grepefi is not None:
+        return 'Y'
+    else:
+        return 'N'
 
 
 def pci():
@@ -425,4 +435,6 @@ hyperthreading()
 cpucores()
 ram()
 virttech()
-print(hap())
+hap()
+numa()
+print(efi())
