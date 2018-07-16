@@ -382,7 +382,12 @@ def pcie():
 
 
 def usb3():
-    pass
+    lsusbusb = subprocess.Popen('lsusb', stdout=subprocess.PIPE)
+    grepusb = subprocess.Popen(('grep', '-ow', '3.0'), stdin=lsusbusb.stdout, stdout=subprocess.PIPE)
+    lsusbusb.stdout.close()
+    wcusb = str(subprocess.check_output(('wc', '-l'), stdin=grepusb.stdout)).rstrip()
+    grepusb.stdout.close()
+    return wcusb
 
 
 def networking():
@@ -437,4 +442,5 @@ ram()
 virttech()
 hap()
 numa()
-print(efi())
+efi()
+print(usb3())
