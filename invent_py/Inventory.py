@@ -578,7 +578,14 @@ def sra():
 
 
 def support():
-    pass
+    """
+    Determines if machine is still supported by Intel
+    :return: 'N/A' or 'SUPPORT', this cannot be seen in the interior
+    """
+    if vendor() is not "Intel":
+        return 'N/A'
+    else:
+        return 'SUPPORT'
 
 
 def cpufamily():
@@ -619,4 +626,5 @@ networking()
 ssd()
 sata()
 space()
-print(cddvd())
+cddvd()
+print(support())
