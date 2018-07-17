@@ -556,7 +556,21 @@ def stable():
 
 
 def cddvd():
-    pass
+    """
+    Determines if the machine is bootable by CD/DVD
+    :return: 'Y' or 'N' based on the existence of the drives
+    """
+    iscdvd = subprocess.Popen(('ls', '/dev'), stdout=subprocess.PIPE)
+    try:
+        grepcdvd = str(subprocess.check_output(('grep', '-i', 'cdrom\|cdrw\|dvd\|dvdrw'), stdin=iscdvd.stdout)).rstrip()
+        iscdvd.stdout.close()
+    except Exception as e:
+        grepcdvd = None
+        iscdvd.stdout.close()
+    if grepcdvd is not None:
+        return 'Y'
+    else:
+        return 'N'
 
 
 def sra():
@@ -604,4 +618,5 @@ usb3()
 networking()
 ssd()
 sata()
-print(space())
+space()
+print(cddvd())
