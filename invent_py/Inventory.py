@@ -514,7 +514,37 @@ def sata():
 
 
 def space():
-    pass
+    """
+    Determines the amount of available storage space on the system
+    :return: Float that represents total storage space
+    """
+    totalspace = 0.0
+    issda = subprocess.Popen(('ls', '/sys/block'), stdout=subprocess.PIPE)
+    try:
+        grepissda = str(subprocess.check_output(('grep', '-w', 'sda'), stdin=issda.stdout)).rstrip()
+        issda.stdout.close()
+    except Exception as e:
+        grepissda = None
+        issda.stdout.close()
+    if grepissda is not None:
+        stodev = []
+        lsstodev = subprocess.Popen('ls -d /dev/sd*', stdout=subprocess.PIPE, shell=True)
+        grepstodev = str(subprocess.check_output(('grep', '-v', '[0-9]'), stdin=lsstodev.stdout)).rstrip()
+        lsstodev.stdout.close()
+        if '\n' in grepstodev:
+            stodev = grepstodev.splitlines()
+        else:
+            stodev.append(grepstodev)
+        for i in range(len(stodev)):
+            devspace = subprocess.Popen(('sgdisk', '--print', str(stodev[i])), stdout=subprocess.PIPE)
+            grepspace = subprocess.Popen(('grep', '-m', '1', '[0-9].'), stdin=devspace.stdout, stdout=subprocess.PIPE)
+            devspace.stdout.close()
+            sedspace = subprocess.Popen(('sed', '-e', 's/^.*,//g'), stdin=grepspace.stdout, stdout=subprocess.PIPE)
+            grepspace.stdout.close()
+            sed2space = str(subprocess.check_output(('sed', 's/[^0-9.]*//g'), stdin=sedspace.stdout)).rstrip()
+            sedspace.stdout.close()
+            totalspace += float(sed2space)
+    return totalspace
 
 
 def boots():
@@ -522,7 +552,7 @@ def boots():
 
 
 def stable():
-    pass
+    return 'STABLE'
 
 
 def cddvd():
@@ -573,4 +603,5 @@ efi()
 usb3()
 networking()
 ssd()
-print(sata())
+sata()
+print(space())
