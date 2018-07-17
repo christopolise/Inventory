@@ -24,7 +24,7 @@ def prereqcheck():
     Checks for and installs prerequisites if necessary
     :return:
     """
-    prerequisites = ['dmidecode', 'util-linux', 'ethtool', 'usbutils', 'gptfdisk', 'bc']
+    prerequisites = ['dmidecode', 'util-linux', 'ethtool', 'usbutils', 'gptfdisk']
     for i in range(len(prerequisites)):
         rpm = subprocess.Popen(('rpm', '-qa', '--last'), stdout=subprocess.PIPE)
         try:
@@ -589,7 +589,17 @@ def support():
 
 
 def cpufamily():
-    pass
+    """
+    Determines the family number of a certain type of cpu
+    :return: Int indicative of the family number
+    """
+    try:
+        fam = subprocess.Popen(('grep', '-m', '1', 'family', '/proc/cpuinfo'), stdout=subprocess.PIPE)
+        sedfam = str(subprocess.check_output(('sed', 's/.*: //'), stdin=fam.stdout)).rstrip()
+        fam.stdout.close()
+        return sedfam
+    except Exception as e:
+        return '---'
 
 
 def cpumodel():
@@ -627,4 +637,5 @@ ssd()
 sata()
 space()
 cddvd()
-print(support())
+support()
+cpufamily()
