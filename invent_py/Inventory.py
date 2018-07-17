@@ -404,49 +404,36 @@ def networking():
         grepeth = None
         lseth.stdout.close()
     if grepeth is not None:
-        if ("\n" in grepeth):
+        if "\n" in grepeth:
             ethdevices = grepeth.splitlines()
         else:
             ethdevices.append(grepeth)
-        # print(ethdevices)
         for i in range(len(ethdevices)):
-
-            ethspeed = subprocess.Popen(('ethtool', str(ethdevices[i])), stdout=subprocess.PIPE)
-            try:
-                grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', '40000base'), stdin=ethspeed.stdout)
-                ethspeed.stdout.close()
-                fortyg += 1
-                print('made 40')
-            except Exception as e:
+            for fn in ('40000base', '10000base', '1000base', '100base'):
                 try:
-                    grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', '10000base'), stdin=ethspeed.stdout)
+                    ethspeed = subprocess.Popen(('ethtool', str(ethdevices[i])), stdout=subprocess.PIPE)
+                    grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', fn), stdin=ethspeed.stdout)
                     ethspeed.stdout.close()
-                    teng += 1
-                    print('made 10')
-                except Exception as e:
-                    try:
-                        grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', '1000base'),
-                                                            stdin=ethspeed.stdout)
-                        ethspeed.stdout.close()
+                    print('made it here')
+                    if fn is '40000base':
+                        fortyg += 1
+                        break
+                    elif fn is '10000base':
+                        teng += 1
+                        break
+                    elif fn is '1000base':
                         oneg += 1
-                        print('made 1')
-                    except Exception as e:
-                        try:
-                            grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', '100base'),
-                                                                stdin=ethspeed.stdout)
-                            ethspeed.stdout.close()
-                            oneh += 1
-                            print('made 100')
-                        except Exception as e:
-                            grepspeed = '---'
-                            ethspeed.stdout.close()
-    ethspeeds = []
-    ethspeeds.append(oneh)
-    ethspeeds.append(oneg)
-    ethspeeds.append(teng)
-    ethspeeds.append(fortyg)
+                        break
+                    elif fn is '100base':
+                        oneh += 1
+                        break
+                    else:
+                        exit(code=1)
+                except Exception as e:
+                    continue
+        print('out of the for loop')
+    ethspeeds = [oneh, oneg, teng, fortyg]
     print(ethspeeds)
-
 
 
 def ssd():
