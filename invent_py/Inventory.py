@@ -631,7 +631,17 @@ def cpustepping():
 
 
 def cpumicrocode():
-    pass
+    """
+    Determines the microcode hex number of a certain type of cpu
+    :return: String indicative of the microcode hex number
+    """
+    try:
+        micro = subprocess.Popen(('grep', '-m', '1', 'microcode', '/proc/cpuinfo'), stdout=subprocess.PIPE)
+        sedmicro = str(subprocess.check_output(('sed', 's/.*: //'), stdin=micro.stdout)).rstrip()
+        micro.stdout.close()
+        return sedmicro
+    except Exception as e:
+        return '---'
 
 
 sudocheck()
@@ -659,4 +669,6 @@ space()
 cddvd()
 support()
 cpufamily()
-print(cpumodel())
+cpumodel()
+cpustepping()
+cpumicrocode()
