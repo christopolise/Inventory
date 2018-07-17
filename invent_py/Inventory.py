@@ -356,6 +356,10 @@ def numa():
 
 
 def efi():
+    """
+    Determines if the system has EFI capabilities
+    :return: 'Y' or 'N' based on if the /sys/firmware/efi dir exists
+    """
     lsefi = subprocess.Popen(('ls', '/sys/firmware'), stdout=subprocess.PIPE)
     try:
         grepefi = subprocess.check_output(('grep', '-oi', 'efi'), stdin=lsefi.stdout)
@@ -382,6 +386,10 @@ def pcie():
 
 
 def usb3():
+    """
+    Determines how many USB 3.0 slots are on the machine
+    :return: An int that defines the number of USB 3.0 slots
+    """
     lsusbusb = subprocess.Popen('lsusb', stdout=subprocess.PIPE)
     grepusb = subprocess.Popen(('grep', '-ow', '3.0'), stdin=lsusbusb.stdout, stdout=subprocess.PIPE)
     lsusbusb.stdout.close()
@@ -391,6 +399,10 @@ def usb3():
 
 
 def networking():
+    """
+    Determines how many of each type of ethernet port exists in the system (not counting SYS MGMT ports) and their speed
+    :return: An array where 0=100Mb, 1=1Gb, 2=10Gb, and 3=40Gb
+    """
     lseth = subprocess.Popen(('ls', '/sys/class/net'), stdout=subprocess.PIPE)
     fortyg = 0
     teng = 0
@@ -435,6 +447,10 @@ def networking():
 
 
 def ssd():
+    """
+    Determines how many SSDs exist in a system
+    :return: An int that describes the number of SSDs in the system
+    """
     ssds = 0
     issda = subprocess.Popen(('ls', '/sys/block'), stdout=subprocess.PIPE)
     try:
@@ -443,19 +459,13 @@ def ssd():
     except Exception as e:
         grepissda = None
         issda.stdout.close()
-        print('none assigned')
-    # print(grepissda)
     if grepissda is not None:
-        print('sda device found')
         sddev = []
         lsdev = str(subprocess.check_output('ls -d /sys/block/sd*', shell=True)).rstrip()
-        print(lsdev)
         if '\n' in lsdev:
             sddev = lsdev.splitlines()
-            print(sddev)
         else:
             sddev.append(lsdev)
-            print(sddev)
         for i in range(len(sddev)):
             if str(subprocess.check_output(('cat', str(sddev[i]) + '/queue/rotational'))).rstrip() is '0':
                 ssds += 1
@@ -465,7 +475,42 @@ def ssd():
 
 
 def sata():
-    pass
+    """
+    Determines how many of the devices on the system use the SATA protocol
+    :return: An int representing how many devices use SATA
+    """
+    satadevs = 0
+    issda = subprocess.Popen(('ls', '/sys/block'), stdout=subprocess.PIPE)
+    try:
+        grepissda = str(subprocess.check_output(('grep', '-w', 'sda'), stdin=issda.stdout)).rstrip()
+        issda.stdout.close()
+    except Exception as e:
+        grepissda = None
+        issda.stdout.close()
+    if grepissda is not None:
+        satadev = []
+        lssata = subprocess.Popen(('ls', '-g', '/dev/disk/by-path'), stdout=subprocess.PIPE)
+        grepsata = subprocess.Popen(('grep', '-v', 'part'), stdin=lssata.stdout, stdout=subprocess.PIPE)
+        lssata.stdout.close()
+        grep2sata = str(subprocess.check_output(('grep', '../sd'), stdin=grepsata.stdout)).rstrip()
+        grepsata.stdout.close()
+        if '\n' in grep2sata:
+            satadev = grep2sata.splitlines()
+        else:
+            satadev.append(grep2sata)
+        for i in range(len(satadev)):
+            isata = subprocess.Popen(('echo', str(satadev[i])), stdout=subprocess.PIPE)
+            try:
+                grepata = str(subprocess.check_output(('grep', '-wo', 'ata'), stdin=isata.stdout)).rstrip()
+                isata.stdout.close()
+            except Exception as e:
+                grepata = None
+                isata.stdout.close()
+            if grepata is not None:
+                satadevs += 1
+    else:
+        return '---'
+    return satadevs
 
 
 def space():
@@ -527,4 +572,5 @@ numa()
 efi()
 usb3()
 networking()
-print(ssd())
+ssd()
+print(sata())
