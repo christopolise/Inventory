@@ -603,7 +603,17 @@ def cpufamily():
 
 
 def cpumodel():
-    pass
+    """
+        Determines the model number of a certain type of cpu
+        :return: Int indicative of the model number
+        """
+    try:
+        mod = subprocess.Popen(('grep', '-m', '1', 'model', '/proc/cpuinfo'), stdout=subprocess.PIPE)
+        sedmod = str(subprocess.check_output(('sed', 's/.*: //'), stdin=mod.stdout)).rstrip()
+        mod.stdout.close()
+        return sedmod
+    except Exception as e:
+        return '---'
 
 
 def cpustepping():
@@ -639,3 +649,4 @@ space()
 cddvd()
 support()
 cpufamily()
+print(cpumodel())
