@@ -604,9 +604,9 @@ def cpufamily():
 
 def cpumodel():
     """
-        Determines the model number of a certain type of cpu
-        :return: Int indicative of the model number
-        """
+    Determines the model number of a certain type of cpu
+    :return: Int indicative of the model number
+    """
     try:
         mod = subprocess.Popen(('grep', '-m', '1', 'model', '/proc/cpuinfo'), stdout=subprocess.PIPE)
         sedmod = str(subprocess.check_output(('sed', 's/.*: //'), stdin=mod.stdout)).rstrip()
@@ -617,7 +617,17 @@ def cpumodel():
 
 
 def cpustepping():
-    pass
+    """
+    Determines the stepping number of a certain type of cpu
+    :return: Int indicative of the stepping number
+    """
+    try:
+        step = subprocess.Popen(('grep', '-m', '1', 'stepping', '/proc/cpuinfo'), stdout=subprocess.PIPE)
+        sedstep = str(subprocess.check_output(('sed', 's/.*: //'), stdin=step.stdout)).rstrip()
+        step.stdout.close()
+        return sedstep
+    except Exception as e:
+        return '---'
 
 
 def cpumicrocode():
