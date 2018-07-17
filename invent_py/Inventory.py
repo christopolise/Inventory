@@ -114,7 +114,7 @@ def vendor():
     Determines the brand of CPU used
     :return: CPU type
     """
-    vendorlscpu = subprocess.Popen(('lscpu'), stdout=subprocess.PIPE)
+    vendorlscpu = subprocess.Popen('lscpu', stdout=subprocess.PIPE)
     vendorgrep = subprocess.Popen(('grep', '-i', 'Vendor ID'), stdin=vendorlscpu.stdout, stdout=subprocess.PIPE)
     vendorlscpu.stdout.close()
     vendorsed1 = subprocess.Popen(('sed', 's/.*: //'), stdin=vendorgrep.stdout, stdout=subprocess.PIPE)
@@ -203,11 +203,11 @@ def cpuspeed():
     # Method 3.2 cat/sys/devices/system/cpu/cpu/cpufreq/cpuinfo_max_freq:
     cpucat = str(subprocess.check_output(('cat', '/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'))).rstrip()
     if IS_DIG_DEC.match(str(cpucat)):
-        cpuspeed = float(cpucat) / 1000000
-        cpuspeed = format(cpuspeed, '.2f')
+        cpuspeeds = float(cpucat) / 1000000
+        cpuspeeds = format(cpuspeeds, '.2f')
     else:
-        cpuspeed = "---"
-    speeds.append(cpuspeed)
+        cpuspeeds = "---"
+    speeds.append(cpuspeeds)
 
     # Take the highest value out of all possible speeds and return it
     filterlist = []
@@ -414,7 +414,6 @@ def networking():
                     ethspeed = subprocess.Popen(('ethtool', str(ethdevices[i])), stdout=subprocess.PIPE)
                     grepspeed = subprocess.check_output(('grep', '-m', '1', '-o', fn), stdin=ethspeed.stdout)
                     ethspeed.stdout.close()
-                    print('made it here')
                     if fn is '40000base':
                         fortyg += 1
                         break
@@ -431,13 +430,38 @@ def networking():
                         exit(code=1)
                 except Exception as e:
                     continue
-        print('out of the for loop')
     ethspeeds = [oneh, oneg, teng, fortyg]
-    print(ethspeeds)
+    return ethspeeds
 
 
 def ssd():
-    pass
+    ssds = 0
+    issda = subprocess.Popen(('ls', '/sys/block'), stdout=subprocess.PIPE)
+    try:
+        grepissda = str(subprocess.check_output(('grep', '-w', 'sda'), stdin=issda.stdout)).rstrip()
+        issda.stdout.close()
+    except Exception as e:
+        grepissda = None
+        issda.stdout.close()
+        print('none assigned')
+    # print(grepissda)
+    if grepissda is not None:
+        print('sda device found')
+        sddev = []
+        lsdev = str(subprocess.check_output('ls -d /sys/block/sd*', shell=True)).rstrip()
+        print(lsdev)
+        if '\n' in lsdev:
+            sddev = lsdev.splitlines()
+            print(sddev)
+        else:
+            sddev.append(lsdev)
+            print(sddev)
+        for i in range(len(sddev)):
+            if str(subprocess.check_output(('cat', str(sddev[i]) + '/queue/rotational'))).rstrip() is '0':
+                ssds += 1
+    else:
+        return '---'
+    return ssds
 
 
 def sata():
@@ -503,3 +527,4 @@ numa()
 efi()
 usb3()
 networking()
+print(ssd())
