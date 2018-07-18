@@ -646,12 +646,11 @@ def cpumicrocode():
         return '---'
 
 
-# Main function that will take care of the ODS file formatting
-
-
-def main():
-
-    # print(sys.argv[1])
+def insertheader():
+    """
+    If no original Inventory spreadsheet is found, a new sheet will be generated and formatted
+    :return: Void
+    """
     wb = xlwt.Workbook()
     inventpage = wb.add_sheet('Inventory')
 
@@ -671,7 +670,8 @@ def main():
                   'Make/Model', 'Vendor', 'Model/Codename', 'Speed\n(GHz)', 'Sockets', 'Cores /\nCPU', 'HT?',
                   'Total\nThreads', 'RAM\n(GB)', 'VT', 'VTd/\nIOMMU', 'HAP', 'SR_IOV', 'NUMA', 'UEFI', 'PCI', 'PCI-X',
                   'PCI-E', 'USB-3', '100Mb', '1Gb', '10Gb', '40Gb', 'SSD', 'SATA', 'Size GB', 'Boots', 'Stable',
-                  'CD/DVD\nBootable', 'Serial\nRemote\nAccess', 'Power\nRemote\nAccess', 'Support by\nIntel Still', 'Family',
+                  'CD/DVD\nBootable', 'Serial\nRemote\nAccess', 'Power\nRemote\nAccess', 'Support by\nIntel Still',
+                  'Family',
                   'Model', 'Stepping', 'Microcode', 'Bios Update', 'Notes']
     for i in range(len(row2header)):
         inventpage.write(1, i, str(row2header[i]), header)
@@ -689,36 +689,46 @@ def main():
     inventpage.col(42).width = 10000
     inventpage.col(43).width = 10000
 
-    wb.save('Inventory-test.ods')
+    wb.save(sys.argv[1] + '/Inventory-test.ods')
 
+
+def preexisting():
+    """
+    Checks to see if the file already exists
+    :return: Bool that is True or False
+    """
+    for file in os.listdir(sys.argv[1]):
+        if file == 'Inventory-test.ods':
+            return
+        else:
+            insertheader()
+
+
+def checkarg():
+    """
+    Ensures that all flags are correct and the command is correctly formed
+    :return: Bool that is True or False
+    """
+    if len(sys.argv) == 1:
+        print('Please provide target destination for file')
+        exit(1)
+
+
+def setup():
+    """
+    Starts all of the environment checking aspects
+    :return: Void
+    """
     sudocheck()
+    checkarg()
+    preexisting()
     # prereqcheck()
-    hostname()
-    serialnumber()
-    makemodel()
-    vendor()
-    codename()
-    cpuspeed()
-    sockets()
-    threads()
-    hyperthreading()
-    cpucores()
-    ram()
-    virttech()
-    hap()
-    numa()
-    efi()
-    usb3()
-    networking()
-    ssd()
-    sata()
-    space()
-    cddvd()
-    support()
-    cpufamily()
-    cpumodel()
-    cpustepping()
-    cpumicrocode()
+# Main function that will take care of the ODS file formatting
+
+
+def main():
+
+    setup()
 
 
 if __name__ == "__main__":
