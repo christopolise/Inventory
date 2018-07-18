@@ -2,3 +2,5 @@
 inventory_py/\.idea/
 
 invent_py/\.idea/
+
+*.pyc

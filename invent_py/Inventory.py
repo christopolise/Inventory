@@ -3,6 +3,8 @@
 import subprocess
 import os
 import re
+import xlwt
+import sys
 
 IS_DIG_DEC = re.compile(r'\d+\.?\d*')  # Is an integer or decimal
 
@@ -271,7 +273,7 @@ def cpucores():
     :return: An integer that represents how many threads per core there are
     """
     try:
-        return int(threads())/int(sockets())
+        return int(threads()) / int(sockets())
     except TypeError:
         return '---'
 
@@ -290,7 +292,7 @@ def ram():
     seddividend.stdout.close()
     dividend = int(sed2dividend)
     divisor = 1048576
-    quotient = dividend/divisor
+    quotient = dividend / divisor
 
     try:
         if (quotient % 2) == 1:
@@ -643,12 +645,54 @@ def cpumicrocode():
     except Exception as e:
         return '---'
 
+
 # Main function that will take care of the ODS file formatting
 
 
 def main():
+
+    # print(sys.argv[1])
+    wb = xlwt.Workbook()
+    inventpage = wb.add_sheet('Inventory')
+
+    # Styles
+    header = xlwt.easyxf("font: bold on; align: horiz center")
+
+    # Row 1 Horizontal Header
+    inventpage.write_merge(0, 0, 0, 6, 'Machine Information', header)
+    inventpage.write_merge(0, 0, 7, 13, 'CPU Information', header)
+    inventpage.write_merge(0, 0, 21, 24, '# of SLOTS', header)
+    inventpage.write_merge(0, 0, 25, 28, '# of NICs', header)
+    inventpage.write_merge(0, 0, 29, 31, 'Hds', header)
+    inventpage.write_merge(0, 0, 38, 41, 'Microcode', header)
+
+    # Row 2 Horizontal header
+    row2header = ['Asset Tag', 'Hostname', 'Platform/Pcode', 'MM#', 'Software\nDevelopement\nProducts', 'System Serial',
+                  'Make/Model', 'Vendor', 'Model/Codename', 'Speed\n(GHz)', 'Sockets', 'Cores /\nCPU', 'HT?',
+                  'Total\nThreads', 'RAM\n(GB)', 'VT', 'VTd/\nIOMMU', 'HAP', 'SR_IOV', 'NUMA', 'UEFI', 'PCI', 'PCI-X',
+                  'PCI-E', 'USB-3', '100Mb', '1Gb', '10Gb', '40Gb', 'SSD', 'SATA', 'Size GB', 'Boots', 'Stable',
+                  'CD/DVD\nBootable', 'Serial\nRemote\nAccess', 'Power\nRemote\nAccess', 'Support by\nIntel Still', 'Family',
+                  'Model', 'Stepping', 'Microcode', 'Bios Update', 'Notes']
+    for i in range(len(row2header)):
+        inventpage.write(1, i, str(row2header[i]), header)
+
+    # Custom column widths
+    inventpage.row(1).height = 800
+    inventpage.col(2).width = 8000
+    inventpage.col(4).width = 5000
+    inventpage.col(5).width = 5000
+    inventpage.col(6).width = 8000
+    inventpage.col(7).width = 2000
+    inventpage.col(8).width = 10000
+    for i in range(9, 41):
+        inventpage.col(i).width = 3000
+    inventpage.col(42).width = 10000
+    inventpage.col(43).width = 10000
+
+    wb.save('Inventory-test.ods')
+
     sudocheck()
-    prereqcheck()
+    # prereqcheck()
     hostname()
     serialnumber()
     makemodel()
