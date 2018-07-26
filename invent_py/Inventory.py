@@ -1,12 +1,29 @@
 #!/usr/bin/python
 
+"""
+Inventory script written for the Virtualization Lab. On each computer run, returns predetermined system values and sends
+them to a centralized spreadsheet as to keep track of the status and stats of the machine. Project maintained at:
+
+https://github.com/ckglxe95/Inventory
+
+AUTHORED BY: Chris Kitras
+LAST DATE MODIFIED: 2018-07-26
+
+Known issues:
+- NUMA still needs to be written, not sure if looking for NUMA capabilities or if said capabilities are enabled.
+- Support for Red Hat machines yet to be added
+- Refactoring needed:
+    - lscpu
+    - /proc/cpuinfo
+    - prerequisites() needs to check package list only once and search for the values
+"""
+
 import subprocess
 import os
 import re
 import xlwt
 import xlrd
 from xlutils.copy import copy
-from xlutils.styles import Styles
 import sys
 
 IS_DIG_DEC = re.compile(r'\d+\.?\d*')  # Is an integer or decimal
@@ -17,7 +34,6 @@ def sudocheck():
     Checks to see if user has sudo privileges
     :return: void
     """
-
     access = os.getuid()
     if access != 0:
         print('You must run this script as root or under sudo')
@@ -653,22 +669,6 @@ def cpumicrocode():
         return '---'
 
 
-def status(color='green'):
-    """
-    Determines the efficacy of a machine
-    :return: Green if virtualization is available...?
-             Yellow if virtualization is not possible
-             Red if machine does not boot (manually entered)
-             Blue if machine requires further investigation (manually entered)
-    """
-    if virttech() is 'Y':
-        return color
-    elif virttech() is 'N':
-        return 'yellow'
-    else:
-        return 'blue'
-
-
 def insertheader():
     """
     If no original Inventory spreadsheet is found, a new sheet will be generated and formatted
@@ -724,6 +724,7 @@ def preexisting():
         if file == 'Inventory-test.ods':
             print('File exists, editing existing file...')
             return
+    print('No inventory file found, creating new one in \'' + str(sys.argv[1]) + '\' ...')
     insertheader()
 
 
@@ -746,26 +747,50 @@ def setup():
     checkarg()
     preexisting()
     prereqcheck()
+
+
 # Main function that will take care of the ODS file formatting
-
-
 def main():
-
+    """
+    In a properly formatted manner writes values of system machine to spreadsheet
+    :return: Void
+    """
     setup()
+
+    # Initializes the document and makes it ready to be read/edited
     rb = xlrd.open_workbook(sys.argv[1] + '/Inventory-test.ods', formatting_info=True)
     r_sheet = rb.sheet_by_index(0)
     wb = copy(rb)
     sheet = wb.get_sheet(0)
 
+    # Prepares all OS values collected to be inserted into the spreadsheet
     row = [asset(), hostname(), pcode(), mm(), sdp(), serialnumber(), makemodel(), vendor(), codename(), cpuspeed(),
            sockets(), cpucores(), hyperthreading(), threads(), ram(), virttech(), vtd(), hap(), sriov(), numa(),
            efi(), pci(), pcix(), pcie(), usb3(), networking()[0], networking()[1], networking()[2], networking()[3],
            ssd(), sata(), space(), boots(), stable(), cddvd(), sra(), pra(), support(), cpufamily(), cpumodel(),
            cpustepping(), cpumicrocode()]
 
+    # Inserts values into next available row with proper formatting
     r = r_sheet.nrows
     for i in range(len(row)):
-        sheet.write(r, i, row[i])
+        if i == 1:
+            if virttech() is 'Y':
+                sheet.write(r, i, row[i], xlwt.easyxf("pattern: pattern solid, fore_color bright_green; align: horiz "
+                                                      "left; font: bold on"))
+            elif virttech() is 'N':
+                sheet.write(r, i, row[i], xlwt.easyxf("pattern: pattern solid, fore_color yellow; align: horiz left; "
+                                                      "font: bold on"))
+            else:
+                sheet.write(r, i, row[i], xlwt.easyxf("pattern: pattern solid, fore_color light_blue; align: horiz "
+                                                      "left; font: bold on"))
+        else:
+            if row[i] == '---':
+                sheet.write(r, i, row[i], xlwt.easyxf("pattern: pattern solid, fore_color turquoise; align: horiz "
+                                                      "left"))
+                sheet.write(r, 1, row[1], xlwt.easyxf("pattern: pattern solid, fore_color light_blue; align: horiz "
+                                                      "left; font: bold on"))
+            else:
+                sheet.write(r, i, row[i], xlwt.easyxf(" align: horiz left"))
 
     wb.save(sys.argv[1] + '/Inventory-test.ods')
 
