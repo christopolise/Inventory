@@ -6,6 +6,7 @@ import re
 import xlwt
 import xlrd
 from xlutils.copy import copy
+from xlutils.styles import Styles
 import sys
 
 IS_DIG_DEC = re.compile(r'\d+\.?\d*')  # Is an integer or decimal
@@ -652,6 +653,22 @@ def cpumicrocode():
         return '---'
 
 
+def status(color='green'):
+    """
+    Determines the efficacy of a machine
+    :return: Green if virtualization is available...?
+             Yellow if virtualization is not possible
+             Red if machine does not boot (manually entered)
+             Blue if machine requires further investigation (manually entered)
+    """
+    if virttech() is 'Y':
+        return color
+    elif virttech() is 'N':
+        return 'yellow'
+    else:
+        return 'blue'
+
+
 def insertheader():
     """
     If no original Inventory spreadsheet is found, a new sheet will be generated and formatted
@@ -687,7 +704,7 @@ def insertheader():
     inventpage.col(2).width = 8000
     inventpage.col(4).width = 5000
     inventpage.col(5).width = 5000
-    inventpage.col(6).width = 8000
+    inventpage.col(6).width = 10000
     inventpage.col(7).width = 2000
     inventpage.col(8).width = 10000
     for i in range(9, 41):
@@ -705,9 +722,9 @@ def preexisting():
     """
     for file in os.listdir(sys.argv[1]):
         if file == 'Inventory-test.ods':
+            print('File exists, editing existing file...')
             return
-        else:
-            insertheader()
+    insertheader()
 
 
 def checkarg():
@@ -728,16 +745,17 @@ def setup():
     sudocheck()
     checkarg()
     preexisting()
-    # prereqcheck()
+    prereqcheck()
 # Main function that will take care of the ODS file formatting
 
 
 def main():
 
     setup()
-    initbook = xlrd.open_workbook(sys.argv[1] + '/Inventory-test.ods')
-    workbook = copy(initbook)
-    w_sheet = workbook.sheet_by_index(0)
+    rb = xlrd.open_workbook(sys.argv[1] + '/Inventory-test.ods', formatting_info=True)
+    r_sheet = rb.sheet_by_index(0)
+    wb = copy(rb)
+    sheet = wb.get_sheet(0)
 
     row = [asset(), hostname(), pcode(), mm(), sdp(), serialnumber(), makemodel(), vendor(), codename(), cpuspeed(),
            sockets(), cpucores(), hyperthreading(), threads(), ram(), virttech(), vtd(), hap(), sriov(), numa(),
@@ -745,57 +763,11 @@ def main():
            ssd(), sata(), space(), boots(), stable(), cddvd(), sra(), pra(), support(), cpufamily(), cpumodel(),
            cpustepping(), cpumicrocode()]
 
-    # Write values to row
-    j = 0
-    k = False
-    while k is False:
-        if w_sheet.cell(j, 0).value != IndexError:
-            k = False
-            j += 1
-        else:
-            k = True
-            for i in range(len(row)):
-                w_sheet.write(j, i, row[i])
+    r = r_sheet.nrows
+    for i in range(len(row)):
+        sheet.write(r, i, row[i])
 
-    # Styles
-    header = xlwt.easyxf("font: bold on; align: horiz center")
-
-    # Row 1 Horizontal Header
-    w_sheet.write_merge(0, 0, 0, 6, 'Machine Information', header)
-    w_sheet.write_merge(0, 0, 7, 13, 'CPU Information', header)
-    w_sheet.write_merge(0, 0, 21, 24, '# of SLOTS', header)
-    w_sheet.write_merge(0, 0, 25, 28, '# of NICs', header)
-    w_sheet.write_merge(0, 0, 29, 31, 'Hds', header)
-    w_sheet.write_merge(0, 0, 38, 41, 'Microcode', header)
-
-    # Row 2 Horizontal header
-    row2header = ['Asset Tag', 'Hostname', 'Platform/Pcode', 'MM#', 'Software\nDevelopement\nProducts', 'System Serial',
-                  'Make/Model', 'Vendor', 'Model/Codename', 'Speed\n(GHz)', 'Sockets', 'Cores /\nCPU', 'HT?',
-                  'Total\nThreads', 'RAM\n(GB)', 'VT', 'VTd/\nIOMMU', 'HAP', 'SR_IOV', 'NUMA', 'UEFI', 'PCI', 'PCI-X',
-                  'PCI-E', 'USB-3', '100Mb', '1Gb', '10Gb', '40Gb', 'SSD', 'SATA', 'Size GB', 'Boots', 'Stable',
-                  'CD/DVD\nBootable', 'Serial\nRemote\nAccess', 'Power\nRemote\nAccess', 'Support by\nIntel Still',
-                  'Family',
-                  'Model', 'Stepping', 'Microcode', 'Bios Update', 'Notes']
-    for i in range(len(row2header)):
-        w_sheet.write(1, i, str(row2header[i]), header)
-
-    # Custom column widths
-    w_sheet.row(1).height = 800
-    w_sheet.col(2).width = 8000
-    w_sheet.col(4).width = 5000
-    w_sheet.col(5).width = 5000
-    w_sheet.col(6).width = 11000
-    w_sheet.col(7).width = 2000
-    w_sheet.col(8).width = 10000
-    for i in range(9, 41):
-        w_sheet.col(i).width = 3000
-    w_sheet.col(42).width = 10000
-    w_sheet.col(43).width = 10000
-    workbook.save(sys.argv[1] + '/Inventory-test.ods')
-
-    # sheet = workbook.sheet_by_index(0)
-    # checker = sheet.cell(1, 0)
-    # print(checker.value)
+    wb.save(sys.argv[1] + '/Inventory-test.ods')
 
 
 if __name__ == "__main__":
