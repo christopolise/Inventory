@@ -655,9 +655,9 @@ def cpustepping():
         return '---'
 
 
-def cpumicrocode():
+def cpumicrover():
     """
-    Determines the microcode hex number of a certain type of cpu
+    Determines the microcode version hex number of a certain type of cpu
     :return: String indicative of the microcode hex number
     """
     try:
@@ -667,6 +667,18 @@ def cpumicrocode():
         return sedmicro
     except Exception as e:
         return '---'
+
+
+def cpumicrofile():
+    """
+    Takes the family-model-stepping info and generates microcode file information
+    :return: String that dictates the microcode file needed
+    """
+    info = [cpufamily(), cpumodel(), cpustepping()]
+    for i in range(len(info)):
+        info[i] = format(int(info[i]), 'x')
+
+    return info[0] + "-" + info[1] + "-" + info[2]
 
 
 def insertheader():
@@ -686,7 +698,7 @@ def insertheader():
     inventpage.write_merge(0, 0, 21, 24, '# of SLOTS', header)
     inventpage.write_merge(0, 0, 25, 28, '# of NICs', header)
     inventpage.write_merge(0, 0, 29, 31, 'Hds', header)
-    inventpage.write_merge(0, 0, 38, 41, 'Microcode', header)
+    inventpage.write_merge(0, 0, 38, 42, 'Microcode', header)
 
     # Row 2 Horizontal header
     row2header = ['Asset Tag', 'Hostname', 'Platform/Pcode', 'MM#', 'Software\nDevelopement\nProducts', 'System Serial',
@@ -695,7 +707,7 @@ def insertheader():
                   'PCI-E', 'USB-3', '100Mb', '1Gb', '10Gb', '40Gb', 'SSD', 'SATA', 'Size GB', 'Boots', 'Stable',
                   'CD/DVD\nBootable', 'Serial\nRemote\nAccess', 'Power\nRemote\nAccess', 'Support by\nIntel Still',
                   'Family',
-                  'Model', 'Stepping', 'Microcode', 'Bios Update', 'Notes']
+                  'Model', 'Stepping', 'Microcode\nVersion', 'Microcode\nFile', 'Bios Update', 'Notes']
     for i in range(len(row2header)):
         inventpage.write(1, i, str(row2header[i]), header)
 
@@ -709,8 +721,8 @@ def insertheader():
     inventpage.col(8).width = 10000
     for i in range(9, 41):
         inventpage.col(i).width = 3000
-    inventpage.col(42).width = 10000
     inventpage.col(43).width = 10000
+    inventpage.col(44).width = 10000
 
     wb.save(sys.argv[1] + '/Inventory-test.ods')
 
@@ -768,7 +780,7 @@ def main():
            sockets(), cpucores(), hyperthreading(), threads(), ram(), virttech(), vtd(), hap(), sriov(), numa(),
            efi(), pci(), pcix(), pcie(), usb3(), networking()[0], networking()[1], networking()[2], networking()[3],
            ssd(), sata(), space(), boots(), stable(), cddvd(), sra(), pra(), support(), cpufamily(), cpumodel(),
-           cpustepping(), cpumicrocode()]
+           cpustepping(), cpumicrover(), cpumicrofile()]
 
     # Inserts values into next available row with proper formatting
     r = r_sheet.nrows
