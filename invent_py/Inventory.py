@@ -7,10 +7,9 @@ them to a centralized spreadsheet as to keep track of the status and stats of th
 https://github.com/ckglxe95/Inventory
 
 AUTHORED BY: Chris Kitras
-LAST DATE MODIFIED: 2018-07-30
+LAST DATE MODIFIED: 2018-08-02
 
 Known issues:
-- NUMA still needs to be written, not sure if looking for NUMA capabilities or if said capabilities are enabled.
 - Refactoring needed:
     - lscpu
     - /proc/cpuinfo
