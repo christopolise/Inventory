@@ -11,7 +11,6 @@ LAST DATE MODIFIED: 2018-07-30
 
 Known issues:
 - NUMA still needs to be written, not sure if looking for NUMA capabilities or if said capabilities are enabled.
-- Support for Red Hat machines yet to be added
 - Refactoring needed:
     - lscpu
     - /proc/cpuinfo
@@ -45,7 +44,7 @@ def prereqcheck():
     Checks for and installs prerequisites if necessary
     :return:
     """
-    prerequisites = ['dmidecode', 'util-linux', 'ethtool', 'usbutils', 'gptfdisk']
+    prerequisites = ['dmidecode', 'util-linux', 'ethtool', 'usbutils', 'gptfdisk', 'numactl']
     for i in range(len(prerequisites)):
         rpm = subprocess.Popen(('rpm', '-qa', '--last'), stdout=subprocess.PIPE)
         try:
@@ -373,7 +372,39 @@ def sriov():
 
 
 def numa():
-    pass
+    """
+    Determines if the system has NUMA capabilities
+    :return: 'Y' or 'N' based on a number of tests
+    """
+    # Check to see if 'No NUMA' is explicitly in the dmesg ring
+    dmsgnuma = subprocess.Popen('dmesg', stdout=subprocess.PIPE)
+    try:
+        grepnuma = subprocess.check_output(('grep', '-iwo', 'no numa'), stdin=dmsgnuma.stdout)
+        dmsgnuma.stdout.close()
+    except Exception as e:
+        grepnuma = None
+        dmsgnuma.stdout.close()
+    if grepnuma is not None:
+        return 'N'
+
+    # numactl number of nodes
+    numanuma = subprocess.Popen(('numactl', '--hardware'), stdout=subprocess.PIPE)
+    try:
+        grepnumanuma =  subprocess.Popen(('grep', '-m', '1', 'available'), stdin=numanuma.stdout, stdout=subprocess.PIPE)
+        numanuma.stdout.close()
+        grep2numa = str(subprocess.check_output(('grep', '-o', '[0-9][^()]'), stdin=grepnumanuma)).rstrip()
+        grepnumanuma.stdout.close()
+    except Exception as e:
+        grep2numa = None
+        numanuma.stdout.close()
+    if grep2numa is None:
+        return 'N'
+    elif int(grep2numa) == 1:
+        return 'N'
+    elif int(grep2numa) > 1:
+        return 'Y'
+    else:
+        return '---'
 
 
 def efi():
