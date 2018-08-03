@@ -29,9 +29,10 @@ LAST DATE MODIFIED: 2018-08-02
 |   ------------   |   -------------------   |
 |   Christopher Kitras     |   2018-08-03  |
 
-Known issues:
+Known issues
+-------------
 - Refactoring needed:
     - lscpu
     - /proc/cpuinfo
-    - prerequisites() needs to check package list only once and search for the values
-    - Listing all of the harddrives and making info more reliable needed
+- prerequisites() needs to check package list only once and search for the values
+- Listing all of the harddrives and making info more reliable needed
