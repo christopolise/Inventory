@@ -731,7 +731,7 @@ def insertheader():
     inventpage.write_merge(0, 0, 38, 42, 'Microcode', header)
 
     # Row 2 Horizontal header
-    row2header = ['Asset Tag', 'Hostname', 'Platform/Pcode', 'MM#', 'Software\nDevelopement\nProducts', 'System Serial',
+    row2header = ['Asset Tag', 'Hostname', 'Platform/Pcode', 'MM#', 'Software\nDevelopment\nProducts', 'System Serial',
                   'Make/Model', 'Vendor', 'Model/Codename', 'Speed\n(GHz)', 'Sockets', 'Cores /\nCPU', 'HT?',
                   'Total\nThreads', 'RAM\n(GB)', 'VT', 'VTd/\nIOMMU', 'HAP', 'SR_IOV', 'NUMA', 'UEFI', 'PCI', 'PCI-X',
                   'PCI-E', 'USB-3', '100Mb', '1Gb', '10Gb', '40Gb', 'SSD', 'SATA', 'Size GB', 'Boots', 'Stable',
