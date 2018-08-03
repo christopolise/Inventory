@@ -56,7 +56,8 @@ To execute said binary, make sure you are a sudo user or logged in as root, and 
 The Result
 -------------
 The purpose of the script is to write to a centralized ODS spreadsheet that will contain the information of all registered servers in the lab. The method of mass execution of the script on all servers is still being decided upon, but possible candidates for completing the job are either SALT or Ansible. 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+
+![alt text](https://raw.githubusercontent.com/ckglxe95/Inventory/master/Sample.png "Logo Title Text 1")
 
 
 
