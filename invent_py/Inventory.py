@@ -7,7 +7,7 @@ them to a centralized spreadsheet as to keep track of the status and stats of th
 https://github.com/ckglxe95/Inventory
 
 AUTHORED BY: Chris Kitras
-LAST DATE MODIFIED: 2018-08-02
+LAST DATE MODIFIED: 2018-08-03
 
 Known issues:
 - Refactoring needed:
