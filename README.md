@@ -57,8 +57,17 @@ The Result
 -------------
 The purpose of the script is to write to a centralized ODS spreadsheet that will contain the information of all registered servers in the lab. The method of mass execution of the script on all servers is still being decided upon, but possible candidates for completing the job are either SALT or Ansible. 
 
-![alt text](https://raw.githubusercontent.com/ckglxe95/Inventory/master/Sample.png "Sample Inventory Sheet")
+![Sample Inventory Sheet](https://raw.githubusercontent.com/ckglxe95/Inventory/master/Sample.png "Sample Inventory Sheet")
 
+**Minutiae**  
+1. The fields `Asset Tag, Platform/Pcode MM#, Software Development Products, VTd/IOMMU, SR_IOV, PCI, PCI-E, PCI-X, STABLE, Serial Remote Access, Power Remote Access, and Support by Intel Still` are not determined by the script as they are determined by out of box factors.
+2. Red hostname means the machine is in critical condition
+3. Yellow hostname means the machine is limited in capacity (i.e. no virtualization abilities)
+4. Blue hostname means that one or more of the basic fields could not be determined and require more investigation
+5. Green hostname means that the machine is in good condition.
+6. The file belongs to root and cannot be edited unless the user is logged in under root
+7. The file preserves user changes, therefore any corrections, investigative changes, and/or notes added to the file will be preserved after saving. Writing to the file via script after user editing will **not** affect the styling of the file.
+8. The way it is written now, script does **not** detect duplicates, so if the script is run on the same machine twice, there **will** exist duplicates in the spreadsheet. It is suggested that if a new inventory of the lab be taken, _back up the old version of the file just in case_.
 
 
 Known issues
