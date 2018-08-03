@@ -12,13 +12,15 @@ Notes
 
 Files
 -------------
-.  
-├── invent_py  
-│   ├── Inventory.py  
-│   ├── Inventory-test.ods  
-│   └── requirements.txt  
-├── Org_Inventory.sh  
+```bash
+.
+├── invent_py
+│   ├── Inventory.py
+│   ├── Inventory-test.ods
+│   └── requirements.txt
+├── Org_Inventory.sh
 └── README.md  
+```
 
 AUTHORED BY: Chris Kitras
 LAST DATE MODIFIED: 2018-08-02
