@@ -5,11 +5,13 @@ _Inventory script written for the Virtualization Lab. On each computer run, retu
 
 [https://github.com/ckglxe95/Inventory](https://github.com/ckglxe95/Inventory)
 
-###NOTES###
+Notes
+-------------
 - Must run with Python2.x
 - Compiled binary soon to be included
 
-###Files###
+Files
+-------------
 .  
 ├── invent_py  
 │   ├── Inventory.py  
