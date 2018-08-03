@@ -1,7 +1,7 @@
 Inventory Script for the SUSE virtualization lab
 ================================================
 
-_Inventory script written for the Virtualization Lab. On each computer run, returns predetermined system values and sendsthem to a centralized spreadsheet as to keep track of the status and stats of the machine. Project maintained at:_
+_Inventory script written for the Virtualization Lab. On each computer run, returns predetermined system values and sends them to a centralized spreadsheet as to keep track of the status and stats of the machine. Project maintained at:_
 
 [https://github.com/ckglxe95/Inventory](https://github.com/ckglxe95/Inventory)
 
