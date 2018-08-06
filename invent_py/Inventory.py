@@ -13,6 +13,7 @@ Known issues:
 - Refactoring needed:
     - lscpu
     - /proc/cpuinfo
+    - ls sda function perhaps, that way we know storage/hdd/sdd configuration and only pull it once
 """
 
 import subprocess
