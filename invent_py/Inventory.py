@@ -7,13 +7,12 @@ them to a centralized spreadsheet as to keep track of the status and stats of th
 https://github.com/ckglxe95/Inventory
 
 AUTHORED BY: Chris Kitras
-LAST DATE MODIFIED: 2018-08-03
+LAST DATE MODIFIED: 2018-08-06
 
 Known issues:
 - Refactoring needed:
     - lscpu
     - /proc/cpuinfo
-    - prerequisites() needs to check package list only once and search for the values
 """
 
 import subprocess
@@ -44,18 +43,23 @@ def prereqcheck():
     :return:
     """
     prerequisites = ['dmidecode', 'util-linux', 'ethtool', 'usbutils', 'gptfdisk', 'numactl']
+    satisfied = []
+    plist = []
+    rpm = subprocess.check_output(('rpm', '-qa'))
+    plist = rpm.splitlines()
+
     for i in range(len(prerequisites)):
-        rpm = subprocess.Popen(('rpm', '-qa', '--last'), stdout=subprocess.PIPE)
-        try:
-            output = subprocess.check_output(('grep', '-iw', prerequisites[i]), stdin=rpm.stdout)
-        except Exception as e:
-            output = None
-        rpm.wait()
-        if output is None:
-            print('Installing dependency: ' + prerequisites[i])
-            os.system('zypper -n install ' + prerequisites[i])
-        else:
-            print('Dependency ' + prerequisites[i] + ' is already satisfied')
+        for j in range(len(plist)):
+            if prerequisites[i] in plist[j]:
+                print('Dependency ' + prerequisites[i] + ' is already satisfied')
+                satisfied.append(prerequisites[i])
+                break
+
+    required = list(set(prerequisites) - set(satisfied))
+
+    for i in range(len(required)):
+        print('Installing dependency: ' + str(required[i]))
+        os.system('zypper -n install ' + required[i])
 
 
 def asset():
@@ -389,7 +393,7 @@ def numa():
     # numactl number of nodes
     numanuma = subprocess.Popen(('numactl', '--hardware'), stdout=subprocess.PIPE)
     try:
-        grepnumanuma =  subprocess.Popen(('grep', '-m', '1', 'available'), stdin=numanuma.stdout, stdout=subprocess.PIPE)
+        grepnumanuma = subprocess.Popen(('grep', '-m', '1', 'available'), stdin=numanuma.stdout, stdout=subprocess.PIPE)
         numanuma.stdout.close()
         grep2numa = str(subprocess.check_output(('grep', '-o', '[0-9][^()]'), stdin=grepnumanuma)).rstrip()
         grepnumanuma.stdout.close()
