@@ -29,7 +29,7 @@ Files
 Instructions
 -------------
 **Compilation of script**  
-_[Pyinstaller](https://pypi.org/project/PyInstaller/) is the method most recommended_
+_[PyInstaller](https://pypi.org/project/PyInstaller/) is the method most recommended_
 1. `cd` to the directory where the script exists (i.e. `<downloaded/path/>invent_py`)
 2. Ensure that `pyinstaller` is installed on the system (not the virtual environment of the said python project)
 3. If not installed run `sudo pip install pyinstaller`
