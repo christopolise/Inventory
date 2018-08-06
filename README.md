@@ -24,7 +24,7 @@ Files
 
 |   Authored by:   |   Last Date Modified:   |
 |   ------------   |   -------------------   |
-|   Christopher Kitras     |   2018-08-03  |
+|   Christopher Kitras     |   2018-08-06  |
 
 Instructions
 -------------
