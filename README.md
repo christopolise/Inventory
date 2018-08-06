@@ -75,5 +75,4 @@ Known issues
 - Refactoring needed:
     - lscpu
     - /proc/cpuinfo
-- prerequisites() needs to check package list only once and search for the values
 - Listing all of the harddrives and making info more reliable needed
