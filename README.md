@@ -60,7 +60,7 @@ The purpose of the script is to write to a centralized ODS spreadsheet that will
 ![Sample Inventory Sheet](https://raw.githubusercontent.com/ckglxe95/Inventory/master/Sample.png "Sample Inventory Sheet")
 
 **Minutiae**  
-1. The fields `Asset Tag, Platform/Pcode MM#, Software Development Products, VTd/IOMMU, SR_IOV, PCI, PCI-E, PCI-X, STABLE, Serial Remote Access, Power Remote Access, and Support by Intel Still` are not determined by the script as they are determined by out of box factors.
+1. The fields `Asset Tag, Platform/Pcode MM#, Software Development Products, VTd/IOMMU, SR_IOV, PCI, PCI-E, PCI-X, STABLE, Serial Remote Access, Power Remote Access, and Support by Intel Still` are not determined by the script as they are determined by out-of-box factors.
 2. Red hostname means the machine is in critical condition
 3. Yellow hostname means the machine is limited in capacity (i.e. no virtualization abilities)
 4. Blue hostname means that one or more of the basic fields could not be determined and require more investigation
