@@ -76,3 +76,4 @@ Known issues
     - lscpu
     - /proc/cpuinfo
 - Listing all of the harddrives and making info more reliable needed
+- xen RAM check needed (using xl info)
