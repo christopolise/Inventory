@@ -44,7 +44,7 @@ The script is still under active development. Ensure that the current user has s
 ```
 
 **Execution of the binary**  
-Fairly soon, a stand-alone binary file or zipped package will be made available for easier execution regardless of what python interpreter is being used. A link to this .zip will be made available [here](#). If you decide to compile the code using `pyinstaller`, note the following:
+Fairly soon, a stand-alone binary file or zipped package will be made available for easier execution regardless of what python interpreter is being used. A link to this .zip will be made available [here](https://github.com/ckglxe95/Inventory/tree/master/invent_py/bin). If you decide to compile the code using `pyinstaller`, note the following:
     - Once the compilation of the script is complete, you will notice several folders that have been created. The only one you need to worry about is `dist`
     - Once inside `dist` you will see the executable name `Inventory`
 To execute said binary, make sure you are a sudo user or logged in as root, and then enter in the following:
