@@ -24,7 +24,7 @@ Files
 
 |   Authored by:   |   Last Date Modified:   |
 |   ------------   |   -------------------   |
-|   Christopher Kitras     |   2018-08-03  |
+|   Christopher Kitras     |   2018-08-07  |
 
 Instructions
 -------------
@@ -33,7 +33,7 @@ _[PyInstaller](https://pypi.org/project/PyInstaller/) is the method most recomme
 1. `cd` to the directory where the script exists (i.e. `<downloaded/path/>invent_py`)
 2. Ensure that `pyinstaller` is installed on the system (not the virtual environment of the said python project)
 3. If not installed run `sudo pip install pyinstaller`
-4. While in the directory of the script, run `pyinstaller Inventory.py`
+4. While in the directory of the script, run `pyinstaller --onefile Inventory.py`
 
 **Execution of the script**
 The script is still under active development. Ensure that the current user has sudo priviledges or is logged in as root. For now, the way it is run is via the commandline in the following format:
@@ -46,7 +46,7 @@ The script is still under active development. Ensure that the current user has s
 **Execution of the binary**  
 Fairly soon, a stand-alone binary file or zipped package will be made available for easier execution regardless of what python interpreter is being used. A link to this .zip will be made available [here](#). If you decide to compile the code using `pyinstaller`, note the following:
     - Once the compilation of the script is complete, you will notice several folders that have been created. The only one you need to worry about is `dist`
-    - Once inside `dist`, `cd` into `Inventory` and inside you will find various libraries and folders, among which is the binary file `Inventory`
+    - Once inside `dist` you will see the executable name `Inventory`
 To execute said binary, make sure you are a sudo user or logged in as root, and then enter in the following:
 ```bash
 # chmod +x Inventory
@@ -60,7 +60,7 @@ The purpose of the script is to write to a centralized ODS spreadsheet that will
 ![Sample Inventory Sheet](https://raw.githubusercontent.com/ckglxe95/Inventory/master/Sample.png "Sample Inventory Sheet")
 
 **Minutiae**  
-1. The fields `Asset Tag, Platform/Pcode MM#, Software Development Products, VTd/IOMMU, SR_IOV, PCI, PCI-E, PCI-X, STABLE, Serial Remote Access, Power Remote Access, and Support by Intel Still` are not determined by the script as they are determined by out of box factors.
+1. The fields `Asset Tag, Platform/Pcode MM#, Software Development Products, VTd/IOMMU, SR_IOV, PCI, PCI-E, PCI-X, STABLE, Serial Remote Access, Power Remote Access, and Support by Intel Still` are not determined by the script as they are determined by out-of-box factors.
 2. Red hostname means the machine is in critical condition
 3. Yellow hostname means the machine is limited in capacity (i.e. no virtualization abilities)
 4. Blue hostname means that one or more of the basic fields could not be determined and require more investigation
@@ -75,5 +75,5 @@ Known issues
 - Refactoring needed:
     - lscpu
     - /proc/cpuinfo
-- prerequisites() needs to check package list only once and search for the values
 - Listing all of the harddrives and making info more reliable needed
+- xen RAM check needed (using `xl info`)
