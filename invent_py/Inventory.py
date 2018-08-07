@@ -7,13 +7,14 @@ them to a centralized spreadsheet as to keep track of the status and stats of th
 https://github.com/ckglxe95/Inventory
 
 AUTHORED BY: Chris Kitras
-LAST DATE MODIFIED: 2018-08-06
+LAST DATE MODIFIED: 2018-08-07
 
 Known issues:
 - Refactoring needed:
     - lscpu
     - /proc/cpuinfo
     - ls sda function perhaps, that way we know storage/hdd/sdd configuration and only pull it once
+- xen RAM check needed (using xl info)
 """
 
 import subprocess
