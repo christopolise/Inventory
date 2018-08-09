@@ -15,6 +15,8 @@ Known issues:
     - /proc/cpuinfo
     - ls sda function perhaps, that way we know storage/hdd/sdd configuration and only pull it once
 - xen RAM check needed (using xl info)
+- Add functionality to connect with xen100
+- Add proper argument parsing
 """
 
 import subprocess
@@ -24,8 +26,12 @@ import xlwt
 import xlrd
 from xlutils.copy import copy
 import sys
+import argparse
 
 IS_DIG_DEC = re.compile(r'\d+\.?\d*')  # Is an integer or decimal
+
+
+
 
 
 def sudocheck():
@@ -781,9 +787,27 @@ def checkarg():
     Ensures that all flags are correct and the command is correctly formed
     :return: Bool that is True or False
     """
-    if len(sys.argv) == 1:
-        print('Please provide target destination for file')
-        exit(1)
+    # if len(sys.argv) == 1:
+    #     print('Please provide target destination for file')
+    #     exit(1)
+
+    parser = argparse.ArgumentParser(description='Inventory: a project that manages the virt-lab inventory')
+    parser.add_argument('-v', '--verbose', help='increase output verbosity', action='store_true')
+    parser.add_argument('-x', '--dest', help='Select a different base spreadsheet to edit', action='store_true')
+    parser.add_argument('target', metavar='TARGET_DIR', help='Target directory where the spreadsheet will be written')
+
+
+    args = parser.parse_args()
+
+
+def connecttohost():
+    """
+    If wanted, user can connect to remote host to write file
+    :return: Void
+    """
+    os.system('rsync -ravHP root@xen100.virt.lab.novell.com:/share/files/virt-lab/Lab-Inventory.ods ' + sys.argv[1])
+    print(sys.argv[1])
+
 
 
 def setup():
@@ -843,5 +867,9 @@ def main():
     wb.save(sys.argv[1] + '/Inventory-test.ods')
 
 
+def main2():
+    # connecttohost()
+    checkarg()
+
 if __name__ == "__main__":
-    main()
+    main2()

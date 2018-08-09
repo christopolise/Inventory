@@ -1,3 +1,4 @@
+paramiko
 xlrd
 xlutils
 xlwt
