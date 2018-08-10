@@ -31,7 +31,15 @@ import argparse
 IS_DIG_DEC = re.compile(r'\d+\.?\d*')  # Is an integer or decimal
 
 
+parser = argparse.ArgumentParser(description='Inventory: a project that manages the virt-lab inventory')
+parser.add_argument('-v', '--verbose', help='increase output verbosity', action='store_true')
+parser.add_argument('-s', '--source', nargs='?', help='Select a different base spreadsheet to edit')
+parser.add_argument('-m', '--machine', nargs='?', help='Slave machine to check')
+parser.add_argument('target', metavar='TARGET_DIR', help='Target directory where the spreadsheet will be written')
 
+args = parser.parse_args()
+
+print(args.source)
 
 
 def sudocheck():
@@ -791,13 +799,7 @@ def checkarg():
     #     print('Please provide target destination for file')
     #     exit(1)
 
-    parser = argparse.ArgumentParser(description='Inventory: a project that manages the virt-lab inventory')
-    parser.add_argument('-v', '--verbose', help='increase output verbosity', action='store_true')
-    parser.add_argument('-x', '--dest', help='Select a different base spreadsheet to edit', action='store_true')
-    parser.add_argument('target', metavar='TARGET_DIR', help='Target directory where the spreadsheet will be written')
 
-
-    args = parser.parse_args()
 
 
 def connecttohost():
@@ -807,7 +809,6 @@ def connecttohost():
     """
     os.system('rsync -ravHP root@xen100.virt.lab.novell.com:/share/files/virt-lab/Lab-Inventory.ods ' + sys.argv[1])
     print(sys.argv[1])
-
 
 
 def setup():
@@ -870,6 +871,7 @@ def main():
 def main2():
     # connecttohost()
     checkarg()
+
 
 if __name__ == "__main__":
     main2()

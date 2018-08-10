@@ -1,4 +1,4 @@
-paramiko
+salt-ssh
 xlrd
 xlutils
 xlwt
