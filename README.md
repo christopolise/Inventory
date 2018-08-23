@@ -75,12 +75,17 @@ Implementation
 _Given that this script is pretty robust, there are a number of ways that it could be run. More ways are likely to come over time as the script is updated and new neccesities arise._
 
 **Single-host Execution**
-The script binary, which can be downloaded [here](https://github.com/ckglxe95/Inventory/tree/master/invent_py/bin), can now be run as a stand-alone file, instructions for which can be found [here](
+The script binary, which can be downloaded [here](https://github.com/ckglxe95/Inventory/tree/master/invent_py/bin), can now be run as a stand-alone file, instructions for which can be found [here](https://github.com/ckglxe95/Inventory/edit/master/README.md#Instructions) under the heading "Execution of binary", disregarding all directory-specific steps.
 
 **Lab Execution (Multi-host)**
 
 
 **Portable Execution**
+The executable (although still SUSE specific) can be taken to any machine via USB, NFS mount, etc. and executed thusly:
+```bash
+./Inventory .
+```
+This will write the spreadsheet to the current directory, which in turn can be carried to different machines, editing the same spreadsheet.
 
 Known issues
 -------------
