@@ -6,3 +6,5 @@ invent_py/\.idea/
 *.pyc
 
 invent_py/Inventory-test\.ods
+
+*.xls

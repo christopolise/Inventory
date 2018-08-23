@@ -39,7 +39,7 @@ parser.add_argument('target', metavar='TARGET_DIR', help='Target directory where
 
 args = parser.parse_args()
 
-print(args.source)
+# print(args.source)
 
 
 def sudocheck():
@@ -886,4 +886,4 @@ def main2():
 
 
 if __name__ == "__main__":
-    main2()
+    main()
