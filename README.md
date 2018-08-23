@@ -78,7 +78,9 @@ _Given that this script is pretty robust, there are a number of ways that it cou
 The script binary, which can be downloaded [here](https://github.com/ckglxe95/Inventory/tree/master/invent_py/bin), can now be run as a stand-alone file, instructions for which can be found [here](https://github.com/ckglxe95/Inventory/blob/master/README.md#instructions) under the heading "Execution of binary", disregarding all directory-specific steps.
 
 **Lab Execution (Multi-host)**
+The best way to implement this script in a lab environment appears to be through the use of `salt-ssh`. The use of `salt-ssh` eliminates the need to install a salt minion on every machine that will be running the script. Rather, it refers to a roster file that provides a thorough list of all the hosts inspected including their login credentials. The following instructions below are based of the tutorials accredited below.
 
+---Banana---
 
 **Portable Execution**
 The executable (although still SUSE specific) can be taken to any machine via USB, NFS mount, etc. and executed thusly:
