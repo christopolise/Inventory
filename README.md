@@ -75,7 +75,7 @@ Implementation
 _Given that this script is pretty robust, there are a number of ways that it could be run. More ways are likely to come over time as the script is updated and new neccesities arise._
 
 **Single-host Execution**
-The script binary, which can be downloaded [here](https://github.com/ckglxe95/Inventory/tree/master/invent_py/bin), can now be run as a stand-alone file, instructions for which can be found [here](https://github.com/ckglxe95/Inventory/edit/master/README.md#Instructions) under the heading "Execution of binary", disregarding all directory-specific steps.
+The script binary, which can be downloaded [here](https://github.com/ckglxe95/Inventory/tree/master/invent_py/bin), can now be run as a stand-alone file, instructions for which can be found [here](https://github.com/ckglxe95/Inventory/blob/master/README.md#Instructions) under the heading "Execution of binary", disregarding all directory-specific steps.
 
 **Lab Execution (Multi-host)**
 
