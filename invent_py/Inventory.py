@@ -226,12 +226,18 @@ def cpuspeed():
     dmised = str(subprocess.check_output(('sed', 's/.*: //'), stdin=dmigrep.stdout)).rstrip()
     dmigrep.stdout.close()
     dmispeed = re.sub("[^0-9]", "", dmised)
-    dmispeed = float(dmispeed) / 1000
-    dmispeed = format(dmispeed, '.2f')
+    try:
+        dmispeed = float(dmispeed) / 1000
+        dmispeed = format(dmispeed, '.2f')
+    except Exception as e:
+        pass
     speeds.append(dmispeed)
 
     # Method 3.1 cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq:
-    syscat = str(subprocess.check_output(('cat', '/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'))).rstrip()
+    try:
+        syscat = str(subprocess.check_output(('cat', '/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'))).rstrip()
+    except Exception as e:
+        syscat = 'a'
     if IS_DIG_DEC.match(str(syscat)):
         sysspeed = float(syscat) / 1000000
         sysspeed = format(sysspeed, '.2f')
@@ -240,7 +246,10 @@ def cpuspeed():
     speeds.append(sysspeed)
 
     # Method 3.2 cat/sys/devices/system/cpu/cpu/cpufreq/cpuinfo_max_freq:
-    cpucat = str(subprocess.check_output(('cat', '/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'))).rstrip()
+    try:
+        cpucat = str(subprocess.check_output(('cat', '/sys/devices/system/cpu/cpu/cpufreq/cpuinfo_max_freq'))).rstrip()
+    except Exception as e:
+        cpucat = 'a'
     if IS_DIG_DEC.match(str(cpucat)):
         cpuspeeds = float(cpucat) / 1000000
         cpuspeeds = format(cpuspeeds, '.2f')
@@ -254,7 +263,10 @@ def cpuspeed():
         if IS_DIG_DEC.match(str(speeds[i])):
             filterlist.append(speeds[i])
 
-    return max(filterlist)
+    if len(filterlist) != 0:
+        return max(filterlist)
+    else:
+        return "---"
 
 
 def sockets():
