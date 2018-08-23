@@ -24,7 +24,7 @@ Files
 
 |   Authored by:   |   Last Date Modified:   |
 |   ------------   |   -------------------   |
-|   Christopher Kitras     |   2018-08-07  |
+|   Christopher Kitras     |   2018-08-23  |
 
 Instructions
 -------------
@@ -72,8 +72,15 @@ The purpose of the script is to write to a centralized ODS spreadsheet that will
 
 Implementation
 -------------
+_Given that this script is pretty robust, there are a number of ways that it could be run. More ways are likely to come over time as the script is updated and new neccesities arise._
+
+**Single-host Execution**
 
 
+**Lab Execution (Multi-host)**
+
+
+**Portable Execution**
 
 Known issues
 -------------
