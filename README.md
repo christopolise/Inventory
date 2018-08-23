@@ -70,6 +70,11 @@ The purpose of the script is to write to a centralized ODS spreadsheet that will
 8. The way it is written now, script does **not** detect duplicates, so if the script is run on the same machine twice, there **will** exist duplicates in the spreadsheet. It is suggested that if a new inventory of the lab be taken, _back up the old version of the file just in case_.
 
 
+Implementation
+-------------
+
+
+
 Known issues
 -------------
 - Refactoring needed:
