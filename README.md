@@ -83,7 +83,7 @@ The script binary, which can be downloaded [here](https://github.com/ckglxe95/In
 **Portable Execution**
 The executable (although still SUSE specific) can be taken to any machine via USB, NFS mount, etc. and executed thusly:
 ```bash
-./Inventory .
+# ./Inventory .
 ```
 This will write the spreadsheet to the current directory, which in turn can be carried to different machines, editing the same spreadsheet.
 
