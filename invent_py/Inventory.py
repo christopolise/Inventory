@@ -786,7 +786,7 @@ def insertheader():
     inventpage.col(43).width = 10000
     inventpage.col(44).width = 10000
 
-    wb.save(sys.argv[1] + '/Inventory-test.ods')
+    wb.save(sys.argv[1] + '/Inventory-test.xls')
 
 
 def preexisting():
@@ -795,7 +795,7 @@ def preexisting():
     :return: Bool that is True or False
     """
     for file in os.listdir(sys.argv[1]):
-        if file == 'Inventory-test.ods':
+        if file == 'Inventory-test.xls':
             print('File exists, editing existing file...')
             return
     print('No inventory file found, creating new one in \'' + str(sys.argv[1]) + '\' ...')
@@ -819,7 +819,7 @@ def connecttohost():
     If wanted, user can connect to remote host to write file
     :return: Void
     """
-    os.system('rsync -ravHP root@xen100.virt.lab.novell.com:/share/files/virt-lab/Lab-Inventory.ods ' + sys.argv[1])
+    os.system('rsync -ravHP root@xen100.virt.lab.novell.com:/share/files/virt-lab/Lab-Inventory.xls ' + sys.argv[1])
     print(sys.argv[1])
 
 
@@ -834,7 +834,7 @@ def setup():
     prereqcheck()
 
 
-# Main function that will take care of the ODS file formatting
+# Main function that will take care of the xls file formatting
 def main():
     """
     In a properly formatted manner writes values of system machine to spreadsheet
@@ -843,7 +843,7 @@ def main():
     setup()
 
     # Initializes the document and makes it ready to be read/edited
-    rb = xlrd.open_workbook(sys.argv[1] + '/Inventory-test.ods', formatting_info=True)
+    rb = xlrd.open_workbook(sys.argv[1] + '/Inventory-test.xls', formatting_info=True)
     r_sheet = rb.sheet_by_index(0)
     wb = copy(rb)
     sheet = wb.get_sheet(0)
@@ -877,7 +877,7 @@ def main():
             else:
                 sheet.write(r, i, row[i], xlwt.easyxf(" align: horiz left"))
 
-    wb.save(sys.argv[1] + '/Inventory-test.ods')
+    wb.save(sys.argv[1] + '/Inventory-test.xls')
 
 
 def main2():
