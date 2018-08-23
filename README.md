@@ -75,7 +75,7 @@ Implementation
 _Given that this script is pretty robust, there are a number of ways that it could be run. More ways are likely to come over time as the script is updated and new neccesities arise._
 
 **Single-host Execution**
-
+The script binary, which can be downloaded [here](https://github.com/ckglxe95/Inventory/tree/master/invent_py/bin), can now be run as a stand-alone file, instructions for which can be found [here](
 
 **Lab Execution (Multi-host)**
 
