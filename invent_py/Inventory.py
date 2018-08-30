@@ -30,7 +30,6 @@ import argparse
 
 IS_DIG_DEC = re.compile(r'\d+\.?\d*')  # Is an integer or decimal
 
-
 parser = argparse.ArgumentParser(description='Inventory: a project that manages the virt-lab inventory')
 parser.add_argument('-v', '--verbose', help='increase output verbosity', action='store_true')
 parser.add_argument('-s', '--source', nargs='?', help='Select a different base spreadsheet to edit')
@@ -40,6 +39,25 @@ parser.add_argument('target', metavar='TARGET_DIR', help='Target directory where
 args = parser.parse_args()
 
 # print(args.source)
+
+
+def hasxen():
+    """
+    Checks to see if the computer is running in a xen mode
+    :return: If Xen is present True, else False
+    """
+    lsproc = subprocess.Popen(('ls', '/proc'), stdout=subprocess.PIPE)
+    try:
+        grepxen = subprocess.check_output(('grep', '-oi', 'xen'), stdin=lsproc.stdout)
+        lsproc.stdout.close()
+    except Exception as e:
+        grepxen = None
+        lsproc.stdout.close()
+    if grepxen is not None:
+        print('Xen detected on machine!')
+        return 'True'
+    else:
+        return 'False'
 
 
 def sudocheck():
@@ -332,16 +350,29 @@ def ram():
     Determines the amount of RAM in the system (this method is not very accurate)
     :return: Integer that represents the amount of RAM in the system
     """
-    catdividend = subprocess.Popen(('cat', '/proc/meminfo'), stdout=subprocess.PIPE)
-    grepdividend = subprocess.Popen(('grep', '-i', 'memtotal'), stdin=catdividend.stdout, stdout=subprocess.PIPE)
-    catdividend.stdout.close()
-    seddividend = subprocess.Popen(('sed', 's/.*: //'), stdin=grepdividend.stdout, stdout=subprocess.PIPE)
-    grepdividend.stdout.close()
-    sed2dividend = str(subprocess.check_output(('sed', 's/[^0-9]*//g'), stdin=seddividend.stdout)).rstrip().lstrip()
-    seddividend.stdout.close()
-    dividend = int(sed2dividend)
-    divisor = 1048576
-    quotient = dividend / divisor
+
+    if hasxen() is True:
+        catdividend = subprocess.Popen(('xl', 'info'), stdout=subprocess.PIPE)
+        grepdividend = subprocess.Popen(('grep', '-i', 'total_memory'), stdin=catdividend.stdout, stdout=subprocess.PIPE)
+        catdividend.stdout.close()
+        seddividend = subprocess.Popen(('sed', 's/.*: //'), stdin=grepdividend.stdout, stdout=subprocess.PIPE)
+        grepdividend.stdout.close()
+        sed2dividend = str(subprocess.check_output(('sed', 's/[^0-9]*//g'), stdin=seddividend.stdout)).rstrip().lstrip()
+        seddividend.stdout.close()
+        dividend = int(sed2dividend)
+        divisor = 1024
+        quotient = dividend /divisor
+    else:
+        catdividend = subprocess.Popen(('cat', '/proc/meminfo'), stdout=subprocess.PIPE)
+        grepdividend = subprocess.Popen(('grep', '-i', 'memtotal'), stdin=catdividend.stdout, stdout=subprocess.PIPE)
+        catdividend.stdout.close()
+        seddividend = subprocess.Popen(('sed', 's/.*: //'), stdin=grepdividend.stdout, stdout=subprocess.PIPE)
+        grepdividend.stdout.close()
+        sed2dividend = str(subprocess.check_output(('sed', 's/[^0-9]*//g'), stdin=seddividend.stdout)).rstrip().lstrip()
+        seddividend.stdout.close()
+        dividend = int(sed2dividend)
+        divisor = 1048576
+        quotient = dividend / divisor
 
     try:
         if (quotient % 2) == 1:
@@ -867,6 +898,7 @@ def main():
                                                       "font: bold on"))
             else:
                 sheet.write(r, i, row[i], xlwt.easyxf("pattern: pattern solid, fore_color light_blue; align: horiz "
+        
                                                       "left; font: bold on"))
         else:
             if row[i] == '---':
@@ -876,6 +908,13 @@ def main():
                                                       "left; font: bold on"))
             else:
                 sheet.write(r, i, row[i], xlwt.easyxf(" align: horiz left"))
+
+    if hasxen() is True:
+        sheet.write(r, 14, ram(), xlwt.easyxf("pattern: pattern solid, fore_color turquoise; align: horiz "
+                                                      "left"))
+        sheet.write(r, 1, row[1], xlwt.easyxf("pattern: pattern solid, fore_color light_blue; align: horiz "
+                                                      "left; font: bold on"))
+
 
     wb.save(sys.argv[1] + '/Inventory-test.xls')
 
