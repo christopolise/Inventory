@@ -24,7 +24,7 @@ Files
 
 |   Authored by:   |   Last Date Modified:   |
 |   ------------   |   -------------------   |
-|   Christopher Kitras     |   2018-08-07  |
+|   Christopher Kitras     |   2018-08-23  |
 
 Instructions
 -------------
@@ -55,7 +55,7 @@ To execute said binary, make sure you are a sudo user or logged in as root, and 
 
 The Result
 -------------
-The purpose of the script is to write to a centralized ODS spreadsheet that will contain the information of all registered servers in the lab. The method of mass execution of the script on all servers is still being decided upon, but possible candidates for completing the job are either SALT or Ansible. 
+The purpose of the script is to write to a centralized XLS spreadsheet that will contain the information of all registered servers in the lab. The method of mass execution of the script on all servers is still being decided upon, but possible candidates for completing the job are either SALT or Ansible. 
 
 ![Sample Inventory Sheet](https://raw.githubusercontent.com/ckglxe95/Inventory/master/Sample.png "Sample Inventory Sheet")
 
@@ -69,6 +69,98 @@ The purpose of the script is to write to a centralized ODS spreadsheet that will
 7. The file preserves user changes, therefore any corrections, investigative changes, and/or notes added to the file will be preserved after saving. Writing to the file via script after user editing will **not** affect the styling of the file.
 8. The way it is written now, script does **not** detect duplicates, so if the script is run on the same machine twice, there **will** exist duplicates in the spreadsheet. It is suggested that if a new inventory of the lab be taken, _back up the old version of the file just in case_.
 
+
+Implementation
+-------------
+_Given that this script is pretty robust, there are a number of ways that it could be run. More ways are likely to come over time as the script is updated and new neccesities arise._
+
+**Single-host Execution**
+The script binary, which can be downloaded [here](https://github.com/ckglxe95/Inventory/tree/master/invent_py/bin), can now be run as a stand-alone file, instructions for which can be found [here](https://github.com/ckglxe95/Inventory/blob/master/README.md#instructions) under the heading "Execution of binary", disregarding all directory-specific steps.
+
+**Lab Execution (Multi-host)**
+The best way to implement this script in a lab environment appears to be through the use of `salt-ssh`. The use of `salt-ssh` eliminates the need to install a salt minion on every machine that will be running the script. Rather, it refers to a roster file that provides a thorough list of all the hosts inspected including their login credentials. The following instructions below are based of the tutorials accredited below.
+
+Prerequisites:
+- A host machine you are willing to install SALT on, host an NFS daemon, and set up a shared folder that will be accessed by all other machines in the lab.
+- All machines that will be inspected by the script must have NFS and SSH allowed in the firewall. (Instructions will be included below)
+
+[`salt-ssh` Installation (follow as needed)](https://www.sunayu.com/how-to-use-saltstack-salt-ssh/). A sample state file is provided below to outline how the client mounts and runs the command:
+
+```sls
+mount to master machine:
+  mount.mounted:
+    - name: /dir/where/nfs_mount/will/be/mounted
+    - device: ip_of_master:/shared_folder
+    - fstype: nfs
+    
+running the script:
+  cmd.run:
+    - name: /path_of_script/ /path_of_spreadsheet
+```
+
+Hosting an NFS (if you didn't already know)
+(ON HOST)
+1. Install the nfs package for the server
+```bash
+# zypper in nfs-kernel-server
+```
+2. Enable and start the proper services
+```bash
+# systemctl enable rpcbind
+# systemctl start rpcbind
+# systemctl start nfsserver
+# chkconfig nfsserver on
+```
+3. Create and set permissions for shared directory
+```bash
+# mkdir /shared_dir/
+# chmod 777 /shared_dir/
+```
+4. Make sure you allow clients to access the server
+```bash
+# vim /etc/exports
+```
+```vim
+client_ip(rw,no_root_squash,no_all_squash,no_subtree_check)
+```
+5. Export the changes
+```bash
+# exportfs -a
+```
+6. Restart proper services to apply changes
+```bash
+# systemctl restart rpcbind
+# systemctl restart nfsserver
+```
+7. (On SLES 15 or any SUSE distro that uses `firewall-cmd`, it is pretty easy to follow through with `yast`), allowing services through firewall
+```bash
+# firewall-cmd --permanent --add-service=nfs
+# firewall-cmd --permanent --add-service=mountd
+# firewall-cmd --permanent --add-service=rpc-bind
+# firewall-cmd --reload
+```
+
+(ON_CLIENT)
+1. Install nfs package for client
+```bash
+# zypper in nfs-utils
+```
+2. Allow SSH and NFS through firewall
+```bash
+# firewall-cmd --permanent --add-service=ssh
+# firewall-cmd --permanent --add-service=nfs
+# firewall-cmd --reload
+# systemctl enable sshd
+```
+
+There is more testing to be done, but basically one can run the `salt-ssh` as explained in the tutorial linked above using a state file that will mount the shared drive to the client in question and have the client run the script, writing to the same spreadsheet, therefore updating the lab serially in one blow.
+
+**Portable Execution**
+The executable (although still SUSE specific) can be taken to any machine via USB, NFS mount, etc. and executed thusly:
+```bash
+# ./Inventory .
+```
+This will write the spreadsheet to the current directory, which in turn can be carried to different machines, editing the same spreadsheet.
 
 Known issues
 -------------
