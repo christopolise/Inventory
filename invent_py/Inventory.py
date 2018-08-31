@@ -7,14 +7,13 @@ them to a centralized spreadsheet as to keep track of the status and stats of th
 https://github.com/ckglxe95/Inventory
 
 AUTHORED BY: Chris Kitras
-LAST DATE MODIFIED: 2018-08-07
+LAST DATE MODIFIED: 2018-08-30
 
 Known issues:
 - Refactoring needed:
     - lscpu
     - /proc/cpuinfo
     - ls sda function perhaps, that way we know storage/hdd/sdd configuration and only pull it once
-- xen RAM check needed (using xl info)
 - Add functionality to connect with xen100
 - Add proper argument parsing
 """
@@ -27,6 +26,7 @@ import xlrd
 from xlutils.copy import copy
 import sys
 import argparse
+import datetime
 
 IS_DIG_DEC = re.compile(r'\d+\.?\d*')  # Is an integer or decimal
 
@@ -799,8 +799,8 @@ def insertheader():
                   'Total\nThreads', 'RAM\n(GB)', 'VT', 'VTd/\nIOMMU', 'HAP', 'SR_IOV', 'NUMA', 'UEFI', 'PCI', 'PCI-X',
                   'PCI-E', 'USB-3', '100Mb', '1Gb', '10Gb', '40Gb', 'SSD', 'SATA', 'Size GB', 'Boots', 'Stable',
                   'CD/DVD\nBootable', 'Serial\nRemote\nAccess', 'Power\nRemote\nAccess', 'Support by\nIntel Still',
-                  'Family',
-                  'Model', 'Stepping', 'Microcode\nVersion', 'Microcode\nFile', 'Bios Update', 'Notes']
+                  'Family', 'Model', 'Stepping', 'Microcode\nVersion', 'Microcode\nFile', 'Distro\nVersion',
+                  'Date\nAdded', 'Bios Update', 'Notes']
     for i in range(len(row2header)):
         inventpage.write(1, i, str(row2header[i]), header)
 
@@ -812,10 +812,12 @@ def insertheader():
     inventpage.col(6).width = 10000
     inventpage.col(7).width = 2000
     inventpage.col(8).width = 10000
-    for i in range(9, 41):
+    for i in range(9, 42):
         inventpage.col(i).width = 3000
-    inventpage.col(43).width = 10000
-    inventpage.col(44).width = 10000
+    inventpage.col(43).width = 8000
+    inventpage.col(44).width = 3000
+    inventpage.col(45).width = 10000
+    inventpage.col(46).width = 10000
 
     wb.save(sys.argv[1] + '/Inventory-test.xls')
 
@@ -833,6 +835,28 @@ def preexisting():
     insertheader()
 
 
+def getdate():
+    """
+    :return: Date the script was executed
+    """
+    now = datetime.datetime.now()
+    return now.strftime("%Y-%m-%d")
+
+
+def getdist():
+    """
+    Uses /etc/issue to return the version pf the OS
+    :return: String of the version of the distro
+    """
+    catdist = subprocess.Popen(('cat', '/etc/os-release'), stdout=subprocess.PIPE)
+    grepdist = subprocess.Popen(('grep', 'PRETTY_NAME'), stdin=catdist.stdout, stdout=subprocess.PIPE)
+    catdist.stdout.close()
+    seddist = subprocess.Popen(('sed', 's/PRETTY_NAME//g'), stdin=grepdist.stdout, stdout=subprocess.PIPE)
+    grepdist.stdout.close()
+    sed2dist = str(subprocess.check_output(('sed', 's/[^a-zA-Z0-9. ]//g'), stdin=seddist.stdout)).rstrip()
+    return sed2dist
+
+
 def checkarg():
     """
     Ensures that all flags are correct and the command is correctly formed
@@ -841,8 +865,6 @@ def checkarg():
     # if len(sys.argv) == 1:
     #     print('Please provide target destination for file')
     #     exit(1)
-
-
 
 
 def connecttohost():
@@ -884,7 +906,7 @@ def main():
            sockets(), cpucores(), hyperthreading(), threads(), ram(), virttech(), vtd(), hap(), sriov(), numa(),
            efi(), pci(), pcix(), pcie(), usb3(), networking()[0], networking()[1], networking()[2], networking()[3],
            ssd(), sata(), space(), boots(), stable(), cddvd(), sra(), pra(), support(), cpufamily(), cpumodel(),
-           cpustepping(), cpumicrover(), cpumicrofile()]
+           cpustepping(), cpumicrover(), cpumicrofile(), getdist(), getdate()]
 
     # Inserts values into next available row with proper formatting
     r = r_sheet.nrows
@@ -926,3 +948,4 @@ def main2():
 
 if __name__ == "__main__":
     main()
+    getdist()
