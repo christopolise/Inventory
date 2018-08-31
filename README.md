@@ -8,23 +8,25 @@ _Inventory script written for the Virtualization Lab. On each computer run, retu
 Notes
 -------------
 - Must run with Python2.x
-- Compiled binary soon to be included
+- Include commandline parameters
 
 Files
 -------------
 ```bash
 .
 ├── invent_py
-│   ├── Inventory.py
-│   ├── Inventory-test.ods
-│   └── requirements.txt
+│   ├── bin
+│   │   └── Inventory
+│   ├── Inventory.py
+│   └── requirements.txt
 ├── Org_Inventory.sh
-└── README.md  
+├── README.md
+└── Sample.png
 ```
 
 |   Authored by:   |   Last Date Modified:   |
 |   ------------   |   -------------------   |
-|   Christopher Kitras     |   2018-08-23  |
+|   Christopher Kitras     |   2018-08-30  |
 
 Instructions
 -------------
@@ -168,4 +170,3 @@ Known issues
     - lscpu
     - /proc/cpuinfo
 - Listing all of the harddrives and making info more reliable needed
-- xen RAM check needed (using `xl info`)
