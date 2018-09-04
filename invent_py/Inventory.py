@@ -758,7 +758,10 @@ def cpumicrover():
         micro = subprocess.Popen(('grep', '-m', '1', 'microcode', '/proc/cpuinfo'), stdout=subprocess.PIPE)
         sedmicro = str(subprocess.check_output(('sed', 's/.*: //'), stdin=micro.stdout)).rstrip()
         micro.stdout.close()
-        return len(sedmicro)
+        if len(sedmicro) <= 0:
+            return '---'
+        else:
+            return sedmicro
     except Exception as e:
         return '---'
 
