@@ -7,7 +7,7 @@ them to a centralized spreadsheet as to keep track of the status and stats of th
 https://github.com/ckglxe95/Inventory
 
 AUTHORED BY: Chris Kitras
-LAST DATE MODIFIED: 2018-08-30
+LAST DATE MODIFIED: 2018-09-04
 
 Known issues:
 - Refactoring needed:
@@ -140,10 +140,11 @@ def serialnumber():
     :return: System serial number
     """
     serial = str(subprocess.check_output(('dmidecode', '-s', 'system-serial-number'))).rstrip()
-
     if serial is not None:
         if any(c.isalpha() for c in serial):
             return serial
+        else:
+            return "---"
     else:
         return "---"
 
