@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 
 """
 Inventory script written for the Virtualization Lab. On each computer run, returns predetermined system values and sends
@@ -7,7 +7,7 @@ them to a centralized spreadsheet as to keep track of the status and stats of th
 https://github.com/ckglxe95/Inventory
 
 AUTHORED BY: Chris Kitras
-LAST DATE MODIFIED: 2018-09-04
+LAST DATE MODIFIED: 2018-10-04
 
 Known issues:
 - Refactoring needed:
@@ -951,5 +951,9 @@ def main2():
 
 
 if __name__ == "__main__":
-    main()
-    getdist()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('Received KeyboardInterrupt. Exiting application')
+    except SystemExit:
+        raise
