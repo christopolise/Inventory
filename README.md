@@ -42,7 +42,7 @@ The script is still under active development. Ensure that the current user has s
 
 
 ```bash
-# python2 Inventory.py [TARGET FILE DIRECTORY]
+python2 Inventory.py [TARGET FILE DIRECTORY]
 ```
 
 **Execution of the binary**  
@@ -51,8 +51,8 @@ Fairly soon, a stand-alone binary file or zipped package will be made available 
     - Once inside `dist` you will see the executable name `Inventory`
 To execute said binary, make sure you are a sudo user or logged in as root, and then enter in the following:
 ```bash
-# chmod +x Inventory
-# ./Inventory [TARGET FILE DIRECTORY]
+chmod +x Inventory
+./Inventory [TARGET FILE DIRECTORY]
 ```
 
 The Result
