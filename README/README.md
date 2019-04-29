@@ -14,14 +14,18 @@ Files
 -------------
 ```bash
 .
-├── invent_py
-│   ├── bin
-│   │   └── Inventory
-│   ├── Inventory.py
-│   └── requirements.txt
-├── Org_Inventory.sh
-├── README.md
-└── Sample.png
+├── Inventory-1.0.tar.gz
+|   └── Inventory-1.0
+|       └── Inventory.py
+├── Inventory.changes
+├── Inventory.spec
+├── Misc
+│   └── Org_Inventory.sh
+├── README
+│   ├── README.md
+│   └── Sample.png
+└── xlutils-2.0.0.tar.gz
+
 ```
 
 |   Authored by:   |   Last Date Modified:   |
