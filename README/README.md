@@ -92,7 +92,7 @@ The Result
 -------------
 The purpose of the script is to write to a centralized XLS spreadsheet that will contain the information of all registered servers in the lab. The method of mass execution of the script on all servers is still being decided upon, but possible candidates for completing the job are either SALT or Ansible. 
 
-![Sample Inventory Sheet](https://raw.githubusercontent.com/ckglxe95/Inventory/master/Sample.png "Sample Inventory Sheet")
+![Sample Inventory Sheet](https://github.com/ckglxe95/Inventory/blob/master/README/Sample.png "Sample Inventory Sheet")
 
 **Minutiae**  
 1. The fields `Asset Tag, Platform/Pcode MM#, Software Development Products, VTd/IOMMU, SR_IOV, PCI, PCI-E, PCI-X, STABLE, Serial Remote Access, Power Remote Access, and Support by Intel Still` are not determined by the script as they are determined by out-of-box factors.
