@@ -9,6 +9,15 @@ Notes
 -------------
 - Must run with Python2.x
 - Include commandline parameters
+- Can (and probably should) be used with `salt-ssh`
+- Designed for RPM to be built at [Open Build Service](http://build.opensuse.org)
+
+TODO
+-------------
+- Upgrade the script from Python2.7 to Python3.x
+- Refactor code to move from transliteration of system commands to actual emulated behavior
+- (For GUI/TUI) Add machine and rack objects to more easily organize lab info
+- Consider making needed fields modular, thus allowing more future fields to be added
 
 Files
 -------------
@@ -30,10 +39,14 @@ Files
 
 |   Authored by:   |   Last Date Modified:   |
 |   ------------   |   -------------------   |
-|   Christopher Kitras     |   2018-08-30  |
+|   Christopher Kitras     |   2019-04-29  |
 
 Instructions
 -------------
+
+Manual Building
+------------------
+
 **Compilation of script**  
 _[PyInstaller](https://pypi.org/project/PyInstaller/) is the method most recommended_
 1. `cd` to the directory where the script exists (i.e. `<downloaded/path/>invent_py`)
@@ -46,7 +59,7 @@ The script is still under active development. Ensure that the current user has s
 
 
 ```bash
-python2 Inventory.py [TARGET FILE DIRECTORY]
+python2 /<path_to_script>/Inventory.py [TARGET FILE DIRECTORY]
 ```
 
 **Execution of the binary**  
@@ -57,6 +70,22 @@ To execute said binary, make sure you are a sudo user or logged in as root, and 
 ```bash
 chmod +x Inventory
 ./Inventory [TARGET FILE DIRECTORY]
+```
+
+Packaging into RPM
+------------------
+
+The recommended platform to use to build an RPM is using SUSE's [Open Build Service](http://build.opensuse.org) which will allow for easier packaging and version tracking of this package. The project for `Inventory` currently exists [here](https://build.opensuse.org/package/show/home:christopolise/inventory). Using this package instead of a built binary will allow for platform flexibility (still within SUSE family at this point) and easier implementation within a salt state.
+
+An RPM package is now available [here](https://download.opensuse.org/repositories/home:/christopolise) and can be downloaded via zypper:
+
+```bash
+# zypper ar -r http://download.opensuse.org/repositories/home:/christopolise/<distro's name>/home:christopolise.repo LabSysTools
+# zypper in Inventory
+```
+After it has been sucessfully installed, the package can be run with
+```bash
+# Inventory [TARGE FILE DIRECTORY]
 ```
 
 The Result
