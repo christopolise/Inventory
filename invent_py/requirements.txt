@@ -1,4 +1,0 @@
-salt-ssh
-xlrd
-xlutils
-xlwt

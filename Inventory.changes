@@ -1,0 +1,53 @@
+-------------------------------------------------------------------
+Tue Feb 26 23:25:02 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- swap pip from BuildRequires to Requires
+-------------------------------------------------------------------
+Thu Feb 14 18:47:14 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Changed strategy for including xlutils 
+
+-------------------------------------------------------------------
+Tue Feb 12 20:46:22 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Added BuildRequires for xlutils 
+
+-------------------------------------------------------------------
+Wed Feb  6 00:04:18 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Attempt to fix xlutils issue 
+
+-------------------------------------------------------------------
+Tue Feb  5 23:54:26 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Quickfix
+
+-------------------------------------------------------------------
+Tue Feb  5 23:50:29 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Added dependency for script 
+
+-------------------------------------------------------------------
+Tue Feb 5 22:54:00 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Autogenerating exec and removing the original one
+
+-------------------------------------------------------------------
+Thu Jan 24 22:00:14 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Adding fix for macro for SLES-11-SP4
+
+-------------------------------------------------------------------
+Thu Jan 24 21:41:24 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Fixing rpmlint issues.
+
+-------------------------------------------------------------------
+Thu Jan 24 21:24:22 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Fixing problem with astrics
+
+-------------------------------------------------------------------
+Thu Jan 24 21:21:46 UTC 2019 - Chris Kitras <ckitras@suse.com>
+
+- Initial commit with changes to the spec file
