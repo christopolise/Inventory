@@ -110,13 +110,13 @@ Implementation
 _Given that this script is pretty robust, there are a number of ways that it could be run. More ways are likely to come over time as the script is updated and new neccesities arise._
 
 **Single-host Execution**
-The script binary, which can be downloaded [here](https://github.com/ckglxe95/Inventory/tree/master/invent_py/bin), can now be run as a stand-alone file, instructions for which can be found [here](https://github.com/ckglxe95/Inventory/blob/master/README.md#instructions) under the heading "Execution of binary", disregarding all directory-specific steps.
+The script binary, which can be made using the process described above, can be run as a stand-alone file, instructions for which can also be found above under the heading "Execution of binary", disregarding all directory-specific steps.
 
 **Lab Execution (Multi-host)**
 The best way to implement this script in a lab environment appears to be through the use of `salt-ssh`. The use of `salt-ssh` eliminates the need to install a salt minion on every machine that will be running the script. Rather, it refers to a roster file that provides a thorough list of all the hosts inspected including their login credentials. The following instructions below are based of the tutorials accredited below.
 
 Prerequisites:
-- A host machine you are willing to install SALT on, host an NFS daemon, and set up a shared folder that will be accessed by all other machines in the lab.
+- A host machine on which you are willing to install SALT, host an NFS daemon, and set up a shared folder that will be accessed by all other machines in the lab.
 - All machines that will be inspected by the script must have NFS and SSH allowed in the firewall. (Instructions will be included below)
 
 [`salt-ssh` Installation (follow as needed)](https://www.sunayu.com/how-to-use-saltstack-salt-ssh/). A sample state file is provided below to outline how the client mounts and runs the command:
